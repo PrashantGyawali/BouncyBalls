@@ -3,6 +3,7 @@ let canvas /**@type {HTMLCanvasElement} */=document.querySelector('#hello');
 let display=canvas.getContext('2d');
 let width=canvas.width;
 let height=canvas.height;
+let gameover=false;
 
 class Canvas {
     constructor(board)
@@ -84,6 +85,7 @@ class Canvas {
      
     }
 
+    
 
   }
 
@@ -95,11 +97,11 @@ class Canvas {
     return rotatedVelocities;
 }
 
-  function resolveCollision(particle, otherParticle) {
+function resolveCollision(particle, otherParticle) {
     const xDist = otherParticle.x - particle.x;
     const yDist = otherParticle.y - particle.y;
 
-if(Math.sqrt(xDist*xDist+yDist*yDist)<(particle.radius+otherParticle.radius))
+    if(Math.sqrt(xDist*xDist+yDist*yDist)<(particle.radius+otherParticle.radius))
    { const xVelocityDiff = particle.velocity.x - otherParticle.velocity.x;
     const yVelocityDiff = particle.velocity.y - otherParticle.velocity.y;
 
@@ -136,6 +138,27 @@ if(Math.sqrt(xDist*xDist+yDist*yDist)<(particle.radius+otherParticle.radius))
     }
 }
 }
+
+function checkTouchCollision(x,r)
+    {
+        let xpos=x.offsetX;
+        let ypos=x.offsetY;
+
+
+        if((board.balls).length>0)
+        {temp =board.balls.forEach(
+                             (e)=>{
+                             let xDist=xpos - e.x;
+                             let yDist=ypos - e.y;
+                            let Dist=Math.sqrt(xDist*xDist+yDist*yDist);
+                               if(Dist<(r+e.radius))
+                                {
+                                   gameover=true;
+                                 }
+                                }
+            )
+            }
+    }
 
 
 
@@ -183,9 +206,18 @@ canvas.addEventListener('click',
     let vx=getRandomInRange(0,v);
     let vy=getRandomInRange(0,2)<1?Math.sqrt(v*v-vx*vx):(-Math.sqrt(v*v-vx*vx));
     vx*=getRandomInRange(0,2)<1?(-1):(1);
-    board.balls.push(new Ball(e.offsetX,e.offsetY,Math.sqrt(m)*30,vx,vy,'white',m));
+    let r=Math.sqrt(m)*30;
+
+
+    checkTouchCollision(e,r);
+    console.log(gameover);
+
+    if(gameover==false)
+    {
+    board.balls.push(new Ball(e.offsetX,e.offsetY,r,vx,vy,'white',m));
     multiplier+=board.score>5?0.1:0.05;
     board.score++;
+    }
 }
 )
 
@@ -198,6 +230,13 @@ let update = function() {
     if(board.score>40)
     {test=5;
     counter=(Math.random()*1000)<test?(Math.random()*1200):((Math.random()*1000)>300?0:8);
+    if(counter>40)
+    {
+        const image = document.getElementById("source");
+        board.board.globalAlpha = counter/1500;
+        board.board.drawImage(image, 0, 0, width,height);
+        board.board.globalAlpha = 1;
+    }
     }
 
     board.update();
