@@ -28,7 +28,7 @@ class Canvas {
       levelmodifier(score)
       {
                     
-                     this.trail=0.04;
+                     this.trail=0.1; //lower the longer
                     
 
         if(score<=10)
@@ -80,7 +80,7 @@ class Canvas {
         this.board.beginPath();
         this.board.strokeStyle="black";
         this.board.font="30px Georgia";
-        this.board.strokeText(String(this.balls.length),40,40);
+        this.board.strokeText("Score: "+String(this.balls.length),40,40);
         this.board.closePath();
      
     }
@@ -209,8 +209,7 @@ canvas.addEventListener('click',
     let r=Math.sqrt(m)*30;
 
 
-    checkTouchCollision(e,r);
-    console.log(gameover);
+    // checkTouchCollision(e,r);
 
     if(gameover==false)
     {
@@ -224,7 +223,6 @@ canvas.addEventListener('click',
 
 let counter=8;
 
-
 let update = function() {
     test=0;
     if(board.score>40)
@@ -232,7 +230,15 @@ let update = function() {
     counter=(Math.random()*1000)<test?(Math.random()*1200):((Math.random()*1000)>300?0:8);
     if(counter>40)
     {
-        const image = document.getElementById("source");
+        const image = document.getElementById("freeze");
+        board.board.globalAlpha = counter/1500;
+        board.board.drawImage(image, 0, 0, width,height);
+        board.board.globalAlpha = 1;
+    }
+
+    if(counter<5)
+    {
+        const image = document.getElementById("fast");
         board.board.globalAlpha = counter/1500;
         board.board.drawImage(image, 0, 0, width,height);
         board.board.globalAlpha = 1;
@@ -240,6 +246,11 @@ let update = function() {
     }
 
     board.update();
+
+    if(gameover)
+    {
+        return;
+    }
     setTimeout(update, counter);
 }
 setTimeout(update, counter);
