@@ -1,8 +1,24 @@
 
 let canvas /**@type {HTMLCanvasElement} */=document.querySelector('#hello');
 let display=canvas.getContext('2d');
+
+let scorediv=document.getElementById('score');
+
 let width=canvas.width;
 let height=canvas.height;
+
+let body=document.getElementById("body");
+let t=document.getElementById("effect");
+
+let effect=t.getContext('2d');
+
+let alpha = 1;
+let changing=1;
+
+
+let freezesound= new Audio("./sound/freeze.mp3");
+let fastsound=new Audio("./sound/fast.mp3");
+
 let gameover=false;
 
 class Canvas {
@@ -12,9 +28,7 @@ class Canvas {
         this.balls=[];
         this.score=0;
         this.trail=0.1; //lower=longer trail
-        this.interval=120; //as in fps
-    } 
-
+     } 
 
     drawball(ball) {
 
@@ -28,43 +42,70 @@ class Canvas {
       levelmodifier(score)
       {
                     
-                     this.trail=0.1; //lower the longer
+        this.trail=0.5; //lower the longer
                     
 
-        if(score<=10)
+        if(this.score<=10)
         {
             this.board.clearRect(0,0,width,height);
         }
-        if(score>10)
+        if(this.score>10)
         {
             this.board.fillStyle=`rgba(255,0,0,${this.trail}`;
             this.board.fillRect(0,0,width,height);
+  
+                if(score>25 && score<=35)
+                {
+                    if (changing==1) 
+                    {   alpha -= 0.05;
+                        if (alpha <= 0) {changing = -1;}
+                    } 
+                    else
+                    {   alpha += 0.001;
+                        if (alpha >= 1) {changing = 1;}
+                    }
+                    if(alpha>=0 && alpha <=1)
+                    {
+                        this.board.globalAlpha=alpha;
+                    }
+                }
 
-             if(score>20)
-             {  
-                if(score<50||score>60)
+                if(this.score>35)
+                {
+                    if (changing==1) 
+                    {   alpha -= Math.random()/50;
+                        if (alpha <= -0.5) {changing = -1;}
+                    } 
+                    else
+                    {   alpha += Math.random()/50;
+                        if (alpha >= 1) {changing = 1;}
+                    }
+                    if(alpha>=0 && alpha <=1)
+                    {
+                        this.board.globalAlpha=alpha<0?0:alpha;
+                    }
+                }
+
+                if(this.score<40 && this.score>10)
                 {
                     for(let i=0;i<(this.balls.length-1);i++)
-                {
+                         {
                     for(let j=i+1;j<this.balls.length;j++)
                     {
                         resolveCollision(this.balls[i],this.balls[j]);
                     }
-                }  
+                         }  
                  } 
                     
-                if(score>30)
+                if(this.score>30)
                  {
                      this.trail=0.01;
-                    
-                     if(score>40)
-                         {
-                            setInterval(()=>{this.interval=Math.random()*Math.random()*30},2000);
-                         }
                  }
              }
-        }   
+           
     }
+
+
     update()
     { 
         this.levelmodifier(this.score);
@@ -76,28 +117,151 @@ class Canvas {
         e.wallcollision();
         this.drawball(e);
         });
-
-        this.board.beginPath();
-        this.board.strokeStyle="black";
-        this.board.font="30px Georgia";
-        this.board.strokeText("Score: "+String(this.balls.length),40,40);
-        this.board.closePath();
-     
     }
-
-    
-
   }
 
-  function rotate(velocity, angle) {
-    const rotatedVelocities = {
-        x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
-        y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
-    };
-    return rotatedVelocities;
+
+
+
+class Ball{
+    constructor(x,y,r,dx,dy,color='white',mass=2)
+    {
+        this.x=x;
+        this.y=y;
+        this.radius=r;
+        this.velocity={x:dx,y:dy};
+        this.color=color;
+        this.mass=mass;
+    }
+
+    wallcollision()
+    {
+        if((this.x+this.radius)>width && this.velocity.x>0 )
+        {
+            this.velocity.x*=(-1);
+        }
+
+        if( (this.x-this.radius)<0 && this.velocity.x<0)
+        {
+            this.velocity.x*=(-1);
+        }
+
+        if((this.y+this.radius)>height && this.velocity.y>0)
+        {  
+            this.velocity.y*=(-1);
+        }
+        if((this.y-this.radius)<0 && this.velocity.y<0)
+        { 
+            this.velocity.y*=(-1);
+        }
+    }
 }
 
-function resolveCollision(particle, otherParticle) {
+let board= new Canvas(display);
+let multiplier=5;
+body.addEventListener('click',
+(e)=>
+{
+    let m=getRandomInRange(1.5,4.8);
+    let v=multiplier/m;
+    let vx=getRandomInRange(0,v);
+    let vy=getRandomInRange(0,2)<1?Math.sqrt(v*v-vx*vx):(-Math.sqrt(v*v-vx*vx));
+    vx*=getRandomInRange(0,2)<1?(-1):(1);
+    let r=Math.sqrt(m)*30;
+
+
+    // checkTouchCollision(e,r);
+
+    if(gameover==false)
+    {
+    board.balls.push(new Ball(e.offsetX,e.offsetY,r,vx,vy,'white',m));
+    multiplier+=board.score>5?0.1:0.05;
+    board.score++;
+    scorediv.innerText='Score : '+ board.score;
+
+    }
+}
+)
+
+
+let counter=10;
+let skip=false;
+
+
+let update = function() {
+    board.update();
+
+    if(board.score>30)
+    {       if(skip==false)
+            { let test=Math.random()*1000;
+            if(test>=7 && test<=998)
+            {
+
+                counter=10;
+            }
+        
+            if(test<7)
+            {
+                counter=1;
+                const image = document.getElementById("fast");
+               effect.drawImage(image, 0, 0, width,height);
+               fastsound.play();
+                skip=true;
+                setTimeout(()=>{skip=false; fastsound.pause(); fastsound.currentTime=0;},getRandomInRange(700,1000));
+            }
+        
+            if(test>998)
+            {
+            counter=getRandomInRange(500,1000);
+            const image = document.getElementById("freeze");
+            effect.globalAlpha=counter/500;
+            effect.drawImage(image, 0, 0, width,height);
+            freezesound.play();
+            }
+            setTimeout(()=>{skip==false && effect.clearRect(0,0,width,height); freezesound.pause(); freezesound.currentTime=0;}, counter);
+
+        }
+
+    if(gameover)
+    {    return; }
+
+}
+    setTimeout(()=>{
+
+    update();
+        }, counter);
+
+
+}
+
+setTimeout(update, counter);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getRandomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function resolveCollision(particle, otherParticle) {
     const xDist = otherParticle.x - particle.x;
     const yDist = otherParticle.y - particle.y;
 
@@ -160,102 +324,10 @@ function checkTouchCollision(x,r)
             }
     }
 
-
-
-class Ball{
-    constructor(x,y,r,dx,dy,color='white',mass=2)
-    {
-        this.x=x;
-        this.y=y;
-        this.radius=r;
-        this.velocity={x:dx,y:dy};
-        this.color=color;
-        this.mass=mass;
+function rotate(velocity, angle) {
+        const rotatedVelocities = {
+            x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
+            y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
+        };
+        return rotatedVelocities;
     }
-
-    wallcollision()
-    {
-        if((this.x+this.radius)>width && this.velocity.x>0 )
-        {
-            this.velocity.x*=(-1);
-        }
-
-        if( (this.x-this.radius)<0 && this.velocity.x<0)
-        {
-            this.velocity.x*=(-1);
-        }
-
-        if((this.y+this.radius)>height && this.velocity.y>0)
-        {  
-            this.velocity.y*=(-1);
-        }
-        if((this.y-this.radius)<0 && this.velocity.y<0)
-        { 
-            this.velocity.y*=(-1);
-        }
-    }
-}
-
-let board= new Canvas(display);
-let multiplier=5;
-canvas.addEventListener('click',
-(e)=>
-{
-    let m=getRandomInRange(1.5,4.8);
-    let v=multiplier/m;
-    let vx=getRandomInRange(0,v);
-    let vy=getRandomInRange(0,2)<1?Math.sqrt(v*v-vx*vx):(-Math.sqrt(v*v-vx*vx));
-    vx*=getRandomInRange(0,2)<1?(-1):(1);
-    let r=Math.sqrt(m)*30;
-
-
-    // checkTouchCollision(e,r);
-
-    if(gameover==false)
-    {
-    board.balls.push(new Ball(e.offsetX,e.offsetY,r,vx,vy,'white',m));
-    multiplier+=board.score>5?0.1:0.05;
-    board.score++;
-    }
-}
-)
-
-
-let counter=8;
-
-let update = function() {
-    test=0;
-    if(board.score>40)
-    {test=5;
-    counter=(Math.random()*1000)<test?(Math.random()*1200):((Math.random()*1000)>300?0:8);
-    if(counter>40)
-    {
-        const image = document.getElementById("freeze");
-        board.board.globalAlpha = counter/1500;
-        board.board.drawImage(image, 0, 0, width,height);
-        board.board.globalAlpha = 1;
-    }
-
-    if(counter<5)
-    {
-        const image = document.getElementById("fast");
-        board.board.globalAlpha = counter/1500;
-        board.board.drawImage(image, 0, 0, width,height);
-        board.board.globalAlpha = 1;
-    }
-    }
-
-    board.update();
-
-    if(gameover)
-    {
-        return;
-    }
-    setTimeout(update, counter);
-}
-setTimeout(update, counter);
-
-
-function getRandomInRange(min, max) {
-    return Math.random() * (max - min) + min;
-  }
