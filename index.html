@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="index.js" defer></script>
     <title>Document</title>
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="index.css">
+
 </head>
-<body style="display: flex; position: relative;" id="body" onselectstart="return false">
-    <canvas id="bg" height="720px" width="1480px" style="border: 1px solid black; background-color:red;position: absolute; left: 0; top: 0; z-index: 0;" ></canvas>
-    <canvas id="hello" height="720px" width="1480px" style="border: 1px solid black;; z-index: 1;" ></canvas>
-    <canvas id="effect" width="1480px" height="720px" style="position: absolute; background-color:transparent; left: 0; top: 0; z-index: 2;"></canvas>
-
-    <div id="UI" style="height:720px; width:1480px; border: 1px solid black; color:black; position:absolute; z-index: 3;">
-    <div style="float:left; font-size: 30px;" id="score" onselectstart="return false">Score :  </div>
+<body style="position: relative;">
+    <div style="z-index: 3;position: absolute;">
+        <a href="game.html"><button>Play</button></a>
     </div>
 
-    <div style="display:none;">
-        <img id="freeze" src="freeze.png" width="300" height="227" />
-        <img id="fast" src="fast.png" width="300" height="227" />
-    </div>
+    <div style="display: flex; flex-direction: column; z-index: 1; position: absolute; left: 80%;" id="voldiv">
+        <button style="width:50px; font-size: 30px;" id="volbtn">&#128264;</button>
+        <input type="range" style=" width:0px; max-width: 100px; opacity: 0;" id="volslider" >
+    </div>   
+
+    <canvas height="720px" width="1500px" style="background-color: aqua; z-index:0; position: absolute;"></canvas>
 </body>
 </html>
