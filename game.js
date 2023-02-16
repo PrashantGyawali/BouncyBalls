@@ -1,4 +1,68 @@
+// let state=0;
 
+let menuscreen=document.getElementById('menu');
+let gamescreen=document.getElementById('game');
+let volume=100;
+menu();
+
+function menu(){
+    // if(state==0){
+// console.log(state);
+gamescreen.style.display='none';
+menuscreen.style.display='inline';
+let voldiv = document.getElementById('voldiv');
+let volbtn = document.getElementById('volbtn');
+let volslider= document.getElementById('volslider');
+let canvas= document.getElementById('bgcanvas');
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+volslider.value=100;
+
+
+let txt=volslider.value==0? '&#128264': volslider.value>50?'&#128266':'&#128265';
+volbtn.innerHTML=txt;
+
+voldiv.addEventListener('mouseout' ,
+()=>{
+
+    volslider.style.transition='width linear 0.25s, opacity linear 0.25s';
+    volslider.style.width='0px';
+    volslider.style.opacity='0';
+
+});
+
+['mouseover', 'click','focus'].forEach(function(event) { voldiv.addEventListener(event, ()=>{
+       volslider.style.transition='width linear 0.25s, opacity linear 0.25s';
+       volslider.style.width='100px';
+       volslider.style.opacity='1';
+   
+   })});
+
+ voldiv.addEventListener('mousemove', ()=>{
+    let txt=volslider.value==0? '&#128264': volslider.value>50?'&#128266':'&#128265';
+volbtn.innerHTML=txt;
+volume=volslider.value;
+});
+voldiv.addEventListener('touchmove', ()=>{
+let txt=volslider.value==0? '&#128264': volslider.value>50?'&#128266':'&#128265';
+volbtn.innerHTML=txt;
+volume=volslider.value;
+
+});
+// }
+}
+
+
+
+
+
+
+
+function game(){
+// { if (state==1){
+menuscreen.style.display='none';
+gamescreen.style.display='inline';
 let canvas /**@type {HTMLCanvasElement} */=document.querySelector('#hello');
 let display=canvas.getContext('2d');
 
@@ -16,10 +80,15 @@ let alpha = 1;
 let changing=1;
 
 
+let bgmusic= new Audio('./sound/bgmusic.wav');
+bgmusic.loop=true;
+console.log( volume);
+bgmusic.volume=volume/100;
 let freezesound= new Audio("./sound/freeze.mp3");
 let fastsound=new Audio("./sound/fast.mp3");
 let gameoversound=new Audio('./sound/gameover.wav');
 
+bgmusic.play();
 let gameover=false;
 
 class Canvas {
@@ -212,8 +281,9 @@ let update = function() {
                 const image = document.getElementById("fast");
                effect.drawImage(image, 0, 0, width,height);
                fastsound.play();
+               bgmusic.playbackRate=1.25;
                 skip=true;
-                setTimeout(()=>{skip=false; fastsound.pause(); fastsound.currentTime=0;},getRandomInRange(700,1000));
+                setTimeout(()=>{skip=false; fastsound.pause(); fastsound.currentTime=0;               bgmusic.playbackRate=1;},getRandomInRange(700,1000));
             }
         
             if(test>998)
@@ -223,8 +293,9 @@ let update = function() {
             effect.globalAlpha=counter/500;
             effect.drawImage(image, 0, 0, width,height);
             freezesound.play();
+            bgmusic.pause();
             }
-            setTimeout(()=>{skip==false && effect.clearRect(0,0,width,height); freezesound.pause(); freezesound.currentTime=0;}, counter);
+            setTimeout(()=>{skip==false && effect.clearRect(0,0,width,height); freezesound.pause(); bgmusic.play(); freezesound.currentTime=0;}, counter);
 
         }
 
@@ -241,20 +312,7 @@ let update = function() {
 
 setTimeout(update, counter);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 
@@ -336,3 +394,5 @@ function rotate(velocity, angle) {
         };
         return rotatedVelocities;
     }
+
+// }
