@@ -145,7 +145,7 @@ voldiv.addEventListener('mouseout' ,
     volslider.style.opacity='0';
     volbtn.style.transition='font 0.25s linear, transform 0.25s linear'
     volbtn.style.fontSize='30px';
-    volbtn.style.transform='translateX(-30%)';
+    volbtn.style.transform='translateX(-0%)';
     
 });
 
@@ -290,7 +290,7 @@ class Canvas {
                     
                 if(this.score>30)
                  {
-                     this.trail=0.01;
+                     this.trail=0.3;
                  }
 
 
@@ -371,10 +371,36 @@ class Ball{
 let board= new Canvas(display);
 let multiplier=5;
 entrysound.volume=volume/200;
+
+let uiclick=false;
+let pausebtn = document.getElementById('pausebtn');
+
+let pauseresume=1;
+let tempcounter;
+pausebtn.addEventListener('click',()=>{
+    uiclick=true;
+    if(pauseresume==(-1))
+    {
+        counter=tempcounter;
+        update();
+    }
+    if(pauseresume==1)
+    {   tempcounter=counter;
+        counter=100000;
+    }
+    pauseresume*=(-1);
+    setTimeout(() => {
+        uiclick=false; 
+    }, 200);   
+});
+
 body.addEventListener('click',
 (e)=>
 {
-    let m=getRandomInRange(1.5,4.8);
+
+
+if(uiclick==false)
+   { let m=getRandomInRange(1.5,4.8);
     let v=multiplier/m;
     let vx=getRandomInRange(0,v);
     let vy=getRandomInRange(0,2)<1?Math.sqrt(v*v-vx*vx):(-Math.sqrt(v*v-vx*vx));
@@ -384,7 +410,7 @@ body.addEventListener('click',
     let temp=new Ball(e.offsetX,e.offsetY,r,vx,vy,'white',m);
     
     entrysound.play();
-    // checkTouchCollision(e,r);
+    checkTouchCollision(e,r);
 
     if(gameover==false)
     {
@@ -397,6 +423,7 @@ body.addEventListener('click',
     {temp.color='black';
     board.strokeStyle='white';
     board.drawball(temp);}
+}
 }
 )
 
