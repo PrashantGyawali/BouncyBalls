@@ -382,11 +382,14 @@ pausebtn.addEventListener('click',()=>{
     if(pauseresume==(-1))
     {
         counter=tempcounter;
+        pausebtn.innerHTML=`=`;
+
         update();
     }
     if(pauseresume==1)
     {   tempcounter=counter;
-        counter=100000;
+        pausebtn.innerHTML=`&#x25B2;`;
+        counter=1000000;
     }
     pauseresume*=(-1);
     setTimeout(() => {
