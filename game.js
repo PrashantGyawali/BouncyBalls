@@ -79,9 +79,10 @@ let display=canvas.getContext('2d');
 
 let scorediv=document.getElementById('score');
 let bg=document.getElementById('bg');
-bg.width=window.innerWidth*99.8/100;
+bg.width=window.innerWidth*99/100;
+bg.height=window.innerHeight*99/100;
 
-canvas.width=window.innerWidth*99.8/100;
+canvas.width=window.innerWidth*99/100;
 canvas.height=window.innerHeight*99/100;
 let width=canvas.width;
 let height=canvas.height;
@@ -106,6 +107,7 @@ class Canvas {
         this.balls=[];
         this.score=0;
         this.trail=0.1; //lower=longer trail
+        this.strokeStyle='black';
      } 
 
     drawball(ball) {
@@ -113,6 +115,9 @@ class Canvas {
         this.board.beginPath();
         this.board.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
         this.board.closePath();
+        this.board.strokeStyle=this.strokeStyle;
+        this.board.lineWidth='5';
+        this.board.stroke();
         this.board.fillStyle = ball.color;
         this.board.fill();
       }
@@ -164,7 +169,7 @@ class Canvas {
                     }
                 }
 
-                if(this.score<40 && this.score>10)
+                if(this.score<42 && this.score>10)
                 {
                     for(let i=0;i<(this.balls.length-1);i++)
                          {
@@ -179,6 +184,8 @@ class Canvas {
                  {
                      this.trail=0.01;
                  }
+
+
              }
            
     }
@@ -245,18 +252,22 @@ body.addEventListener('click',
     let vx=getRandomInRange(0,v);
     let vy=getRandomInRange(0,2)<1?Math.sqrt(v*v-vx*vx):(-Math.sqrt(v*v-vx*vx));
     vx*=getRandomInRange(0,2)<1?(-1):(1);
-    let r=Math.sqrt(m)*30;
+    let r=Math.sqrt(m)*Math.min(window.innerHeight, window.innerWidth)/20;
 
-
-    checkTouchCollision(e,r);
+    let temp=new Ball(e.offsetX,e.offsetY,r,vx,vy,'white',m);
+    // checkTouchCollision(e,r);
 
     if(gameover==false)
     {
-    board.balls.push(new Ball(e.offsetX,e.offsetY,r,vx,vy,'white',m));
+    board.balls.push(temp);
     multiplier+=board.score>5?0.1:0.05;
     board.score++;
     scorediv.innerText='Score : '+ board.score;
     }
+    if(gameover)
+    {temp.color='black';
+    board.strokeStyle='white';
+        board.drawball(temp);}
 }
 )
 
