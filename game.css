@@ -17,7 +17,6 @@
 #effect{
     height:720px;
     width:1480px;
-    border: 1px solid black;
     position:absolute;
     background-size: cover;
     background-image: "url('./freeze.png')";

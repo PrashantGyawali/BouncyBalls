@@ -1,5 +1,15 @@
 // let state=0;
 
+
+let bgmusic= new Audio('./sound/bgmusic.wav');
+bgmusic.loop=true;
+let freezesound= new Audio("./sound/freeze.mp3");
+let fastsound=new Audio("./sound/fast.mp3");
+
+let gameoversound=new Audio('./sound/gameover.wav');
+
+
+
 let menuscreen=document.getElementById('menu');
 let gamescreen=document.getElementById('game');
 let volume=100;
@@ -61,13 +71,18 @@ volume=volslider.value;
 
 function game(){
 // { if (state==1){
+
 menuscreen.style.display='none';
 gamescreen.style.display='inline';
 let canvas /**@type {HTMLCanvasElement} */=document.querySelector('#hello');
 let display=canvas.getContext('2d');
 
 let scorediv=document.getElementById('score');
+let bg=document.getElementById('bg');
+bg.width=window.innerWidth*99.8/100;
 
+canvas.width=window.innerWidth*99.8/100;
+canvas.height=window.innerHeight*99/100;
 let width=canvas.width;
 let height=canvas.height;
 
@@ -79,16 +94,9 @@ let effect=t.getContext('2d');
 let alpha = 1;
 let changing=1;
 
-
-let bgmusic= new Audio('./sound/bgmusic.wav');
-bgmusic.loop=true;
-console.log( volume);
 bgmusic.volume=volume/100;
-let freezesound= new Audio("./sound/freeze.mp3");
-let fastsound=new Audio("./sound/fast.mp3");
-let gameoversound=new Audio('./sound/gameover.wav');
-
-bgmusic.play();
+setTimeout(()=>{bgmusic.play();
+},1000);
 let gameover=false;
 
 class Canvas {
@@ -261,7 +269,10 @@ let update = function() {
    
     if(gameover)
     {  
+        gameoversound.volume=volume/100;
         gameoversound.play();
+        bgmusic.pause();
+
         return;
     } 
     board.update();
@@ -281,6 +292,8 @@ let update = function() {
                 const image = document.getElementById("fast");
                effect.drawImage(image, 0, 0, width,height);
                fastsound.play();
+               fastsound.volume=volume/100;
+
                bgmusic.playbackRate=1.25;
                 skip=true;
                 setTimeout(()=>{skip=false; fastsound.pause(); fastsound.currentTime=0;               bgmusic.playbackRate=1;},getRandomInRange(700,1000));
@@ -292,6 +305,7 @@ let update = function() {
             const image = document.getElementById("freeze");
             effect.globalAlpha=counter/500;
             effect.drawImage(image, 0, 0, width,height);
+            freezesound.volume=volume/100;
             freezesound.play();
             bgmusic.pause();
             }
@@ -312,7 +326,7 @@ let update = function() {
 
 setTimeout(update, counter);
 
-}
+
 
 
 
@@ -395,4 +409,6 @@ function rotate(velocity, angle) {
         return rotatedVelocities;
     }
 
-// }
+
+}
+
