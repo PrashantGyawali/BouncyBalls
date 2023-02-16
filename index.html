@@ -11,16 +11,16 @@
 </head>
 <body id="body" style="position: relative; height:720px" >
 <div id="menu">
-    <div style="z-index: 3;position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);" id="menu">
-        <button style="background-color: red; width:200px; height:200px; font-size: 40px; border: 2px solid black; border-radius: 100%;" onclick="game()">Play</button></a>
+    <div style="z-index: 3;position: absolute; left: 50%; top: 30%; transform: translate(-50%,-50%);" id="menu">
+        <button style="background-color: red; width:200px; color:rgba(0,0,0,1); height:200px; font-size: 40px; border: 2px solid black; border-radius: 100%;" id="playbtn" onclick="animationplaybtn()">Play</button></a>
     </div>
 
     <div style="display: flex; flex-direction: column; z-index: 1; position: absolute; left: 80%;" id="voldiv">
-        <button style="width:50px; font-size: 30px;" id="volbtn">&#128264;</button>
+        <button style="width:50px; font-size: 30px; background: none; border: none;" id="volbtn">&#128264;</button>
         <input type="range" style=" width:0px; max-width: 100px; opacity: 0;" id="volslider" >
     </div>   
 
-    <canvas height="100px" width="100px" style="background-color: aqua; z-index:0; position: absolute; filter: blur(10px);" id="bgcanvas"></canvas>
+    <canvas height="100px" width="100px" style="background-color: aqua; z-index:0; position: absolute; filter: blur(25px);" id="bgcanvas"></canvas>
 </div>
 
 
@@ -30,8 +30,10 @@
     <canvas id="hello" height="720px" width="1480px" style=" z-index: 1;position: absolute;" ></canvas>
     <canvas id="effect" width="1480px" height="720px" style="position: absolute; background-color:transparent; left: 0; top: 0; z-index: 2;"></canvas>
 
-    <div id="UI" style="height:720px; width:1480px; color:black; position:absolute; z-index: 3;">
+    <div id="UI" style="height:720px; width:98vw; color:black; position:absolute; z-index: 3;">
     <div style="float:left; font-size: 30px;" id="score" onselectstart="return false">Score :  </div>
+    <button style="float:right; font-size: 40px; transform: rotate(-90deg);" id="score" onselectstart="return false">=</button>
+
     </div>
 
     <div style="display:none;">

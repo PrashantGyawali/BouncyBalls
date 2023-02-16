@@ -1,11 +1,10 @@
-// let state=0;
-
 
 let bgmusic= new Audio('./sound/bgmusic.wav');
 bgmusic.loop=true;
 let freezesound= new Audio("./sound/freeze.mp3");
 let fastsound=new Audio("./sound/fast.mp3");
-
+let entrysound = new Audio('./sound/entry.wav');
+let bouncesound= new Audio('./sound/bounce.wav')
 let gameoversound=new Audio('./sound/gameover.wav');
 
 
@@ -13,37 +12,149 @@ let gameoversound=new Audio('./sound/gameover.wav');
 let menuscreen=document.getElementById('menu');
 let gamescreen=document.getElementById('game');
 let volume=100;
+
+function animationplaybtn()
+{   let playbtn=document.getElementById('playbtn');
+    playbtn.style.transition='width 1.2s linear, height 1.2s linear, color 1s linear';
+    playbtn.style.width='2500px';
+    playbtn.style.color='rgba(0,0,0,0)'
+    playbtn.style.height='2500px';
+   setTimeout(() => {game();
+    bgmusic.play();
+
+   }, 1200); 
+}
+
+
 menu();
 
 function menu(){
-    // if(state==0){
-// console.log(state);
+    let canvas= document.getElementById('bgcanvas');
+    let board=canvas.getContext('2d');
+
+class Canvas {
+    constructor(board)
+    {
+        this.board=board;
+        this.balls=[];
+        this.strokeStyle='black';
+     } 
+
+    drawball(ball) {
+
+        this.board.beginPath();
+        this.board.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        this.board.closePath();
+        this.board.strokeStyle=this.strokeStyle;
+        this.board.lineWidth='5';
+        this.board.stroke();
+        this.board.fillStyle = ball.color;
+        this.board.fill();
+      }
+    update()
+    {   this.board.clearRect(0,0,window.innerWidth,window.innerHeight);
+        this.balls.forEach((e)=>
+        {
+        e.x+=e.velocity.x;
+        e.y+=e.velocity.y;
+        e.wallcollision();
+        this.drawball(e);
+        });
+    }
+  }
+class Ballz{
+    constructor(x,y,r,dx,dy,color='white',mass=2)
+    {
+        this.x=x;
+        this.y=y;
+        this.radius=r;
+        this.velocity={x:dx,y:dy};
+        this.color=color;
+        this.mass=mass;
+    }
+
+    wallcollision()
+    {
+        if((this.x+this.radius)>window.innerWidth && this.velocity.x>0 )
+        {
+            this.velocity.x*=(-1);
+
+        }
+
+        if( (this.x-this.radius)<0 && this.velocity.x<0)
+        {
+            this.velocity.x*=(-1);
+        }
+
+        if((this.y+this.radius)>window.innerHeight && this.velocity.y>0)
+        {  
+            this.velocity.y*=(-1);
+        }
+        if((this.y-this.radius)<0 && this.velocity.y<0)
+        { 
+            this.velocity.y*=(-1);
+        }
+    }
+}
+let bg= new Canvas(board);
+
+for(let i=0;i<10;i++)
+{
+    let randomy=Math.random()*window.innerHeight;
+    let randomx=Math.random()*window.innerWidth;
+
+    let m=getRandomInRange(1.5,4.8);
+    let v=m;
+    let vx=getRandomInRange(0,v);
+    let vy=getRandomInRange(0,2)<1?Math.sqrt(v*v-vx*vx):(-Math.sqrt(v*v-vx*vx));
+    vx*=getRandomInRange(0,2)<1?(-1):(1);
+    let r=Math.sqrt(m)*Math.min(window.innerHeight, window.innerWidth)/20;
+
+    let temp=new Ballz(randomx,randomy,r,vx-1,vy-1,'white',m); 
+    bg.balls.push(temp);
+}
+
+let update = function() {
+    bg.update();
+    setTimeout(()=>{
+
+    update();
+        }, 10);
+}
+
+setTimeout(update, 10);
+
+
 gamescreen.style.display='none';
 menuscreen.style.display='inline';
 let voldiv = document.getElementById('voldiv');
 let volbtn = document.getElementById('volbtn');
 let volslider= document.getElementById('volslider');
-let canvas= document.getElementById('bgcanvas');
+
 
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 volslider.value=100;
-
-
 let txt=volslider.value==0? '&#128264': volslider.value>50?'&#128266':'&#128265';
 volbtn.innerHTML=txt;
-
 voldiv.addEventListener('mouseout' ,
 ()=>{
 
     volslider.style.transition='width linear 0.25s, opacity linear 0.25s';
     volslider.style.width='0px';
     volslider.style.opacity='0';
-
+    volbtn.style.transition='font 0.25s linear, transform 0.25s linear'
+    volbtn.style.fontSize='30px';
+    volbtn.style.transform='translateX(-30%)';
+    
 });
 
 ['mouseover', 'click','focus'].forEach(function(event) { voldiv.addEventListener(event, ()=>{
        volslider.style.transition='width linear 0.25s, opacity linear 0.25s';
+       volbtn.style.transition='font 0.25s linear, transform 0.25s linear'
+       volbtn.style.fontSize='40px';
+       volbtn.style.transform='translateX(30%)';
+
        volslider.style.width='100px';
        volslider.style.opacity='1';
    
@@ -54,13 +165,13 @@ voldiv.addEventListener('mouseout' ,
 volbtn.innerHTML=txt;
 volume=volslider.value;
 });
+
 voldiv.addEventListener('touchmove', ()=>{
 let txt=volslider.value==0? '&#128264': volslider.value>50?'&#128266':'&#128265';
 volbtn.innerHTML=txt;
 volume=volslider.value;
 
 });
-// }
 }
 
 
@@ -70,8 +181,6 @@ volume=volslider.value;
 
 
 function game(){
-// { if (state==1){
-
 menuscreen.style.display='none';
 gamescreen.style.display='inline';
 let canvas /**@type {HTMLCanvasElement} */=document.querySelector('#hello');
@@ -96,8 +205,7 @@ let alpha = 1;
 let changing=1;
 
 bgmusic.volume=volume/100;
-setTimeout(()=>{bgmusic.play();
-},1000);
+
 let gameover=false;
 
 class Canvas {
@@ -186,10 +294,8 @@ class Canvas {
                  }
 
 
-             }
-           
+             }       
     }
-
 
     update()
     { 
@@ -224,26 +330,47 @@ class Ball{
         if((this.x+this.radius)>width && this.velocity.x>0 )
         {
             this.velocity.x*=(-1);
+            if(board.score<15)
+            {
+                bouncesound.volume=volume/300*(15-board.score)/15;
+                bouncesound.play();
+            }
         }
 
         if( (this.x-this.radius)<0 && this.velocity.x<0)
         {
             this.velocity.x*=(-1);
+            if(board.score<15)
+            {
+                bouncesound.volume=volume/300*(15-board.score)/15;
+                bouncesound.play();
+            }
         }
 
         if((this.y+this.radius)>height && this.velocity.y>0)
         {  
             this.velocity.y*=(-1);
+            if(board.score<15)
+            {
+                bouncesound.volume=volume/300*(15-board.score)/15;
+                bouncesound.play();
+            }
         }
         if((this.y-this.radius)<0 && this.velocity.y<0)
         { 
             this.velocity.y*=(-1);
+            if(board.score<15)
+            {
+                bouncesound.volume=volume/300*(15-board.score)/15;
+                bouncesound.play();
+            }
         }
     }
 }
 
 let board= new Canvas(display);
 let multiplier=5;
+entrysound.volume=volume/200;
 body.addEventListener('click',
 (e)=>
 {
@@ -255,6 +382,8 @@ body.addEventListener('click',
     let r=Math.sqrt(m)*Math.min(window.innerHeight, window.innerWidth)/20;
 
     let temp=new Ball(e.offsetX,e.offsetY,r,vx,vy,'white',m);
+    
+    entrysound.play();
     // checkTouchCollision(e,r);
 
     if(gameover==false)
@@ -267,7 +396,7 @@ body.addEventListener('click',
     if(gameover)
     {temp.color='black';
     board.strokeStyle='white';
-        board.drawball(temp);}
+    board.drawball(temp);}
 }
 )
 
@@ -345,9 +474,6 @@ setTimeout(update, counter);
 
 
 
-function getRandomInRange(min, max) {
-    return Math.random() * (max - min) + min;
-  }
 
   function resolveCollision(particle, otherParticle) {
     const xDist = otherParticle.x - particle.x;
@@ -411,15 +537,17 @@ function checkTouchCollision(x,r)
             )
             }
     }
-
-function rotate(velocity, angle) {
-        const rotatedVelocities = {
-            x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
-            y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
-        };
-        return rotatedVelocities;
-    }
-
-
 }
 
+function rotate(velocity, angle) {
+    const rotatedVelocities = {
+        x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
+        y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
+    };
+    return rotatedVelocities;
+}
+
+
+function getRandomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
