@@ -6,6 +6,7 @@ let fastsound=new Audio("./sound/fast.mp3");
 let entrysound = new Audio('./sound/entry.wav');
 let bouncesound= new Audio('./sound/bounce.wav')
 let gameoversound=new Audio('./sound/gameover.wav');
+let bruh= new Audio('./sound/bruh.mp3');
 
 
 
@@ -188,8 +189,8 @@ let display=canvas.getContext('2d');
 
 let scorediv=document.getElementById('score');
 let bg=document.getElementById('bg');
-bg.width=window.innerWidth*99/100;
-bg.height=window.innerHeight*99/100;
+bg.width=window.innerWidth;
+bg.height=window.innerHeight;
 
 canvas.width=window.innerWidth*99/100;
 canvas.height=window.innerHeight*99/100;
@@ -206,7 +207,7 @@ let changing=1;
 
 bgmusic.volume=volume/100;
 
-let gameover=false;
+let gameover=0;
 
 class Canvas {
     constructor(board)
@@ -248,11 +249,11 @@ class Canvas {
                 if(score>25 && score<=35)
                 {
                     if (changing==1) 
-                    {   alpha -= 0.05;
+                    {   alpha -= alpha<0.5?0.01:0.003;
                         if (alpha <= 0) {changing = -1;}
                     } 
                     else
-                    {   alpha += 0.001;
+                    {   alpha += alpha<0.5?0.01:0.003;
                         if (alpha >= 1) {changing = 1;}
                     }
                     if(alpha>=0 && alpha <=1)
@@ -290,7 +291,7 @@ class Canvas {
                     
                 if(this.score>30)
                  {
-                     this.trail=0.3;
+                     this.trail=0.4;
                  }
 
 
@@ -373,28 +374,11 @@ let multiplier=5;
 entrysound.volume=volume/200;
 
 let uiclick=false;
-let pausebtn = document.getElementById('pausebtn');
 
-let pauseresume=1;
-let tempcounter;
-pausebtn.addEventListener('click',()=>{
+let homebtn=document.getElementById('homebtn');
+homebtn.addEventListener('click',()=>{
     uiclick=true;
-    if(pauseresume==(-1))
-    {
-        counter=tempcounter;
-        pausebtn.innerHTML=`=`;
-
-        update();
-    }
-    if(pauseresume==1)
-    {   tempcounter=counter;
-        pausebtn.innerHTML=`&#x25B2;`;
-        counter=1000000;
-    }
-    pauseresume*=(-1);
-    setTimeout(() => {
-        uiclick=false; 
-    }, 200);   
+    setTimeout(()=>{uiclick=false;},100);
 });
 
 body.addEventListener('click',
@@ -402,7 +386,7 @@ body.addEventListener('click',
 {
 
 
-if(uiclick==false)
+if(uiclick==false && gameover==0)
    { let m=getRandomInRange(1.5,4.8);
     let v=multiplier/m;
     let vx=getRandomInRange(0,v);
@@ -415,17 +399,29 @@ if(uiclick==false)
     entrysound.play();
     checkTouchCollision(e,r);
 
-    if(gameover==false)
+    if(gameover==0)
     {
     board.balls.push(temp);
     multiplier+=board.score>5?0.1:0.05;
     board.score++;
     scorediv.innerText='Score : '+ board.score;
     }
-    if(gameover)
-    {temp.color='black';
+    if(gameover==1)
+    {    
+        bgmusic.pause();
+        gameoversound.volume=volume/150;
+        gameoversound.play();
+        entrysound.pause();
+        if(board.score<5){
+            setTimeout(() => { bruh.play();
+                
+            }, 1000);
+        }
+        setTimeout(()=>{document.getElementById('gameoverdiv').style.display='flex'; scoreanim();},10)
+        temp.color='black';
     board.strokeStyle='white';
-    board.drawball(temp);}
+    board.drawball(temp);
+gameover++;}
 }
 }
 )
@@ -437,14 +433,12 @@ let skip=false;
 
 let update = function() {
    
-    if(gameover)
+    if(gameover==1)
     {  
-        gameoversound.volume=volume/100;
-        gameoversound.play();
-        bgmusic.pause();
-
         return;
     } 
+    if(gameover==0)
+    {  
     board.update();
 
     if(board.score>30)
@@ -466,7 +460,7 @@ let update = function() {
 
                bgmusic.playbackRate=1.25;
                 skip=true;
-                setTimeout(()=>{skip=false; fastsound.pause(); fastsound.currentTime=0;               bgmusic.playbackRate=1;},getRandomInRange(700,1000));
+                setTimeout(()=>{skip=false; fastsound.pause(); fastsound.currentTime=0; effect.clearRect(0,0,width,height);     bgmusic.playbackRate=1;},getRandomInRange(700,1000));
             }
         
             if(test>998)
@@ -478,8 +472,9 @@ let update = function() {
             freezesound.volume=volume/100;
             freezesound.play();
             bgmusic.pause();
-            }
+            
             setTimeout(()=>{skip==false && effect.clearRect(0,0,width,height); freezesound.pause(); bgmusic.play(); freezesound.currentTime=0;}, counter);
+            }
 
         }
 
@@ -491,7 +486,7 @@ let update = function() {
     update();
         }, counter);
 
-
+    }
 }
 
 setTimeout(update, counter);
@@ -561,7 +556,7 @@ function checkTouchCollision(x,r)
                             let Dist=Math.sqrt(xDist*xDist+yDist*yDist);
                                if(Dist<(r+e.radius))
                                 {
-                                   gameover=true;
+                                   gameover=1;
                                  }
                                 }
             )
@@ -581,3 +576,44 @@ function rotate(velocity, angle) {
 function getRandomInRange(min, max) {
     return Math.random() * (max - min) + min;
   }
+
+
+
+
+
+
+
+ function scoreanim()
+ {
+    const numbers = "0123456789";
+    let score='98605';
+    let temp = score.split('').map((e)=>{ return '0'});
+    let test='';
+    temp.forEach((e)=>{test+='0'})
+    let interval = null;
+    document.querySelector("#scoretxt").innerText='0000';
+    let txt=document.querySelector("#scoretxt")
+      let iteration = 0;
+      
+      clearInterval(interval);
+      
+      interval = setInterval(() => {
+        txt.innerText = txt.innerText
+          .split("")
+          .map((number, index) => {
+            if(index < iteration) {
+              return score[index];
+            }
+            return numbers[Math.floor(Math.random() * 10)]
+          })
+          .join("");
+        
+        if(iteration >= temp.length){ 
+          clearInterval(interval);
+        }
+        
+        iteration += 1 / 20;
+      }, 30);
+    
+
+ } 

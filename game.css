@@ -26,3 +26,150 @@
 
 
 
+html, body {
+    box-sizing: border-box;
+    margin: 0 !important;
+    padding: 0 !important;
+overflow: hidden;
+}
+
+#playbtn{
+    background-color: red;
+     width:200px;
+      color:rgba(0,0,0,1);
+       height:200px;
+        font-size: 40px; 
+        border: 2px solid black; 
+        border-radius: 100%;
+}
+
+#playbtn:hover {
+    transition: height 0.25s linear, width 0.25s linear, font-size 0.25s linear;
+    width:270px ;
+    height: 270px;
+    font-size: 48px;
+}
+
+#playbtn:not( :hover ){
+    transition: height 0.15s linear, width 0.15s linear, font-size 0.15s linear;
+    font-size: 40px;
+    height: 200px;
+    width: 200px;
+}
+
+#homebtn{
+    background-image: url('./home btn.png');
+    background-size: cover;
+    background-color: transparent;
+    border: none;
+     height: 50px; 
+     width: 50px;
+}
+
+#restartbtn{
+    float: left;
+    background-image: url('./restartbtn.png');
+    background-size: cover;
+    background-color: transparent;
+    font-size: 30px;
+    border: none; 
+    height: 45px;
+    width: 45px;
+    margin-right: 10px ;
+    margin-top: 5px;
+}
+
+
+
+
+.container {
+    position: absolute;
+    display: flex;
+    flex-direction:column;
+    justify-self: center;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width:100vw;
+  }
+  
+.innercontainer{
+  border: 2px solid black;
+  border-radius: 30px;
+  width:fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+  .row1 {
+    width: 40vw;
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    align-self: center;
+    justify-self: center;
+  }
+  
+  .placeholder {
+    padding: 10px;
+    background-color: #eee;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    justify-self: center;
+  }
+  
+  .row2 {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .col1, .col2 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 10px;
+    padding: 10px;
+    background-color: #eee;
+  }
+  
+  .sub-col1, .sub-col2 {
+    flex: 1;
+    min-width: 100px;
+    margin: 5px;
+    padding: 5px;
+    background-color: #ddd;
+  }
+  
+  .row3 {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .col1, .col2, .col3 {
+    flex: 1;
+    min-width: 100px;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+    background-color: #eee;
+  }
+
+
+  #playagainbtn{
+    background-image: url('./restartbtn.png'); 
+    background-position: 15% 0%;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+  #homebtn2{
+    background-image: url('./home btn.png');
+    background-position: 15% 0%;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }

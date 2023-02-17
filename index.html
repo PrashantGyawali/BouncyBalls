@@ -5,14 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="game.css">
-    <link rel="stylesheet" href="index.css">
     <script src="game.js" defer></script>
     <title>Document</title>
 </head>
 <body id="body" style="position: relative; height:720px" >
 <div id="menu">
     <div style="z-index: 3;position: absolute; left: 50%; top: 30%; transform: translate(-50%,-50%);" id="menu">
-        <button style="background-color: red; width:200px; color:rgba(0,0,0,1); height:200px; font-size: 40px; border: 2px solid black; border-radius: 100%;" id="playbtn" onclick="animationplaybtn()">Play</button></a>
+        <button id="playbtn" onclick="animationplaybtn()">Play</button>
     </div>
 
     <div style="display: flex; flex-direction: column; z-index: 1; position: absolute; left: 80%;" id="voldiv">
@@ -33,9 +32,37 @@
 
     <div id="UI" style="height:720px; width:98vw; color:black; position:absolute; z-index: 3;">
     <div style="float:left; font-size: 30px;" id="score" onselectstart="return false">Score :  </div>
-    <button style="float:right; font-size: 40px; transform: rotate(90deg); background: none; border: none;" id="pausebtn" onselectstart="return false">=</button>
+    <div style="float: right;">
+    <button style="top: 50px; float:right;" id="homebtn" onselectstart="return false"></button>
+    <button id="restartbtn"></button>
 
     </div>
+    </div>
+
+
+
+    <div class="container" id="gameoverdiv" style="display: none;">
+        <div class="innercontainer" id="innercontainer">
+        <div class="row1" id="row1">
+          <div class="placeholder">Game Over</div>
+        </div>
+        <div class="row2" id="row2">
+          <div class="col1" id="currentscorevalue">
+            <div class="sub-col1" id="currentscoretxt" >Current Score: </div>
+            <div class="sub-col2" id="currentscorevalue">Sub-column 2</div>
+          </div>
+          <div class="col2" id="highscorediv">
+            <div class="sub-col1" id="highscoretxt">Highest Score: </div>
+            <div class="sub-col2" id="highscorevalue">Sub-column 2</div>
+          </div>
+        </div>
+        <div class="row3">
+          <div class="col1" id="playagainbtn">Play Again</div>
+          <div class="col2" id="homebtn2">Home</div>
+        </div>
+    </div>
+      </div>
+
 
     <div style="display:none;">
         <img id="freeze" src="freeze.png" width="300" height="227" />
