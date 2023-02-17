@@ -1,4 +1,3 @@
-
 let bgmusic= new Audio('./sound/bgmusic.wav');
 bgmusic.loop=true;
 let freezesound= new Audio("./sound/freeze.mp3");
@@ -8,6 +7,13 @@ let bouncesound= new Audio('./sound/bounce.wav')
 let gameoversound=new Audio('./sound/gameover.wav');
 let bruh= new Audio('./sound/bruh.mp3');
 
+// localStorage.clear();
+
+let highscore=0;
+if(localStorage.highscore)
+{
+    highscore=localStorage.highscore;
+}
 
 
 let menuscreen=document.getElementById('menu');
@@ -23,7 +29,7 @@ function animationplaybtn()
    setTimeout(() => {game();
     bgmusic.play();
 
-   }, 1200); 
+   }, 1000); 
 }
 
 
@@ -385,6 +391,7 @@ body.addEventListener('click',
 (e)=>
 {
 
+    console.log(highscore);
 
 if(uiclick==false && gameover==0)
    { let m=getRandomInRange(1.5,4.8);
@@ -407,21 +414,37 @@ if(uiclick==false && gameover==0)
     scorediv.innerText='Score : '+ board.score;
     }
     if(gameover==1)
-    {    
+    {   high=false;
         bgmusic.pause();
         gameoversound.volume=volume/150;
         gameoversound.play();
         entrysound.pause();
-        if(board.score<5){
+        if(highscore<board.score)
+        {
+            high=true;
+        }
+        setTimeout(()=>
+        {document.getElementById('gameoverdiv').style.display='flex'
+         scoreanim(board.score,high,highscore);
+         if(highscore<board.score)
+        {
+            highscore=board.score;
+            localStorage.highscore=highscore;
+        }
+        }
+        ,0);
+
+        
+        if(board.score<5)
+        {
             setTimeout(() => { bruh.play();
-                
             }, 1000);
         }
-        setTimeout(()=>{document.getElementById('gameoverdiv').style.display='flex'; scoreanim();},10)
+
         temp.color='black';
-    board.strokeStyle='white';
-    board.drawball(temp);
-gameover++;}
+        board.strokeStyle='white';
+         board.drawball(temp);
+        gameover++;}
 }
 }
 )
@@ -583,22 +606,27 @@ function getRandomInRange(min, max) {
 
 
 
- function scoreanim()
+ function scoreanim(sc,high,hhh)
  {
+    if(!high)
+    {
+        document.getElementById('highscorevalue').innerText=String(hhh);
+    }
     const numbers = "0123456789";
-    let score='98605';
+    let score=String(sc);
     let temp = score.split('').map((e)=>{ return '0'});
     let test='';
     temp.forEach((e)=>{test+='0'})
     let interval = null;
-    document.querySelector("#scoretxt").innerText='0000';
-    let txt=document.querySelector("#scoretxt")
-      let iteration = 0;
+    let txt=document.getElementById("currentscorevalue");
+    txt.textContent=test;
+
+    let iteration = 0;
       
       clearInterval(interval);
       
       interval = setInterval(() => {
-        txt.innerText = txt.innerText
+        txt.textContent = txt.textContent
           .split("")
           .map((number, index) => {
             if(index < iteration) {
@@ -610,10 +638,59 @@ function getRandomInRange(min, max) {
         
         if(iteration >= temp.length){ 
           clearInterval(interval);
+          if(high)
+          {setTimeout(()=>{ highscoreanim(sc,hhh);},0)}
         }
         
         iteration += 1 / 20;
       }, 30);
-    
 
  } 
+
+
+
+
+ function highscoreanim(sc,highsc) {
+    const numbers = "0123456789";
+    let score=String(sc);
+    let highscore=String(highsc);
+    console.log(score.length,highscore.length);
+    let test=highscore;
+    if(score.length!=highscore.length)
+    {
+        for(i=0;i<(score.length-highscore.length);i++)
+        {
+            if(highsc=0)
+            {
+                continue;
+            }
+            test+=String(Math.floor(Math.random()*10));
+        }
+    }
+
+    let interval = null;
+    let txt=document.getElementById("highscorevalue");
+    txt.textContent=test;
+
+    let iteration = 0;
+      
+      clearInterval(interval);
+      
+      interval = setInterval(() => {
+        txt.textContent = txt.textContent
+          .split("")
+          .map((number, index) => {
+            if(index < iteration) {
+              return score[index];
+            }
+            return numbers[Math.floor(Math.random() * 10)]
+          })
+          .join("");
+        
+        if(iteration >= test.length){ 
+          clearInterval(interval);
+        }
+        
+        iteration += 1 / 20;
+      }, 30);
+ }
