@@ -6,8 +6,10 @@ let entrysound = new Audio('./sound/entry.wav');
 let bouncesound= new Audio('./sound/bounce.wav')
 let gameoversound=new Audio('./sound/gameover.wav');
 let bruh= new Audio('./sound/bruh.mp3');
+let applause=new Audio('./sound/applaud.wav');
 
-// localStorage.clear();
+
+localStorage.clear();
 
 let highscore=0;
 if(Number(localStorage.highscore)>0)
@@ -15,27 +17,43 @@ if(Number(localStorage.highscore)>0)
     highscore=localStorage.highscore;
 }
 
+document.getElementById("highscoretext").innerText='Highscore : '+highscore;
 
 let menuscreen=document.getElementById('menu');
 let gamescreen=document.getElementById('game');
+var body=document.getElementById('body');
 let volume=100;
 
 function animationplaybtn()
 {   let playbtn=document.getElementById('playbtn');
-    playbtn.style.transition='width 1.2s linear, height 1.2s linear, color 1s linear';
+    playbtn.style.transition='width 1s linear, height 1s linear, color 0.8s linear';
     playbtn.style.width='2500px';
     playbtn.style.color='rgba(0,0,0,0)'
     playbtn.style.height='2500px';
    setTimeout(() => {game();
-    bgmusic.play();
 
    }, 1000); 
 }
-
-
+function animationplaybtncancel()
+{   let playbtn=document.getElementById('playbtn');
+    playbtn.style.transition='width 0.8s linear, height 0.8 linear, color 0.8 linear';
+   
+   setTimeout(()=>{ playbtn.style.width='200px';
+   playbtn.style.color='rgba(0,0,0,1)'; playbtn.style.height='200px';},10)
+}
 menu();
 
 function menu(){
+    document.getElementById("highscoretext").innerText='Highscore : '+highscore;
+
+    bgmusic.pause();
+    let bgcc=document.getElementById('bgcanvas');
+    bgcc.remove();
+    let menuscreen=document.getElementById('menu');
+    menuscreen.innerHTML+=`<canvas height="100px" width="100px" style="background-color: aqua; z-index:0; position: absolute; filter: blur(25px);" id="bgcanvas"></canvas>`
+    menuscreen.style.display='inline';
+    gamescreen.style.display='none';
+    animationplaybtncancel();
     let canvas= document.getElementById('bgcanvas');
     let board=canvas.getContext('2d');
 
@@ -103,6 +121,7 @@ class Ballz{
         }
     }
 }
+delete bg;
 let bg= new Canvas(board);
 
 for(let i=0;i<highscore;i++)
@@ -123,17 +142,16 @@ for(let i=0;i<highscore;i++)
 
 let update = function() {
     bg.update();
-    setTimeout(()=>{
 
+    setTimeout(()=>{
+        document.getElementById('playbtn').addEventListener('click',()=>{  return;})
     update();
         }, 10);
 }
 
-setTimeout(update, 10);
+const updatefn=setTimeout(update, 10);
 
 
-gamescreen.style.display='none';
-menuscreen.style.display='inline';
 let voldiv = document.getElementById('voldiv');
 let volbtn = document.getElementById('volbtn');
 let volslider= document.getElementById('volslider');
@@ -188,12 +206,58 @@ volume=volslider.value;
 
 
 function game(){
+    bgmusic.play();
+gamescreen.innerHTML=`<canvas id="bg" height="720px" width="1480px" style=" background-color:red;position: absolute; left: 0; top: 0; z-index: 0;" ></canvas>
+<canvas id="hello" height="720px" width="1480px" style=" z-index: 1;position: absolute;" ></canvas>
+<canvas id="effect" width="1480px" height="720px" style="position: absolute; background-color:transparent; left: 0; top: 0; z-index: 2;"></canvas>
+
+<div id="UI" style="height:720px; width:98vw; color:black; position:absolute; z-index: 3;">
+<div style="float:left; font-size: 30px;" id="score" onselectstart="return false">Score :  </div>
+<div style="float: right;">
+<button style="top: 50px; float:right;" id="homebtn" onselectstart="return false"></button>
+<button id="restartbtn" ></button>
+
+</div>
+</div>
+
+
+
+<div class="container" id="gameoverdiv" style="display: none; z-index: 10;">
+    <div class="innercontainer" id="innercontainer">
+    <div class="row1" id="row1">
+      <div class="placeholder">Game Over</div>
+    </div>
+    <div class="row2" id="row2">
+      <div class="col1" id="currentscorediv">
+        <div class="sub-col1" id="currentscoretxt" >Current Score: </div>
+        <div class="sub-col2" id="currentscorevalue"></div>
+      </div>
+      <div class="col2" id="highscorediv">
+        <div class="sub-col1" id="highscoretxt">Highest Score: </div>
+        <div class="sub-col2" id="highscorevalue"></div>
+      </div>
+    </div>
+    <div class="row3">
+      <div class="col1" id="playagainbtn" onclick="game()">Play Again</div>
+      <div class="col2" id="homebtn2">Home</div>
+    </div>
+</div>
+  </div>
+
+
+<div style="display:none;">
+    <img id="freeze" src="freeze.png" width="300" height="227" />
+    <img id="fast" src="fast.png" width="300" height="227" />
+</div>`;
+
 menuscreen.style.display='none';
 gamescreen.style.display='inline';
-let canvas /**@type {HTMLCanvasElement} */=document.querySelector('#hello');
-let display=canvas.getContext('2d');
+gameoverdiv.style.display='none';
+const canvas /**@type {HTMLCanvasElement} */=document.querySelector('#hello');
+const display=canvas.getContext('2d');
 
 let scorediv=document.getElementById('score');
+scorediv.innerText='Score: '
 let bg=document.getElementById('bg');
 bg.width=window.innerWidth;
 bg.height=window.innerHeight;
@@ -376,6 +440,7 @@ class Ball{
 }
 
 let board= new Canvas(display);
+board.score=0;
 let multiplier=5;
 entrysound.volume=volume/200;
 
@@ -384,8 +449,19 @@ let uiclick=false;
 let homebtn=document.getElementById('homebtn');
 homebtn.addEventListener('click',()=>{
     uiclick=true;
-    setTimeout(()=>{uiclick=false;},100);
+    setTimeout(()=>{uiclick=false;},1000);
 });
+let restartbtn=document.getElementById('restartbtn');
+restartbtn.addEventListener('click',()=>{
+    uiclick=true;
+    gameover=true;
+    board=null;
+    menu();
+    game();
+    setTimeout(()=>{uiclick=false; },10);
+});
+
+document.getElementById('homebtn').addEventListener('click',()=>{gameover=true; menu();})
 
 body.addEventListener('click',
 (e)=>
@@ -454,7 +530,7 @@ if(uiclick==false && gameover==0)
         
         if(board.score<5)
         {
-            setTimeout(() => { bruh.play();
+            setTimeout(() => { bruh.volume=volume/100; bruh.play();
             }, 1000);
         }
 
@@ -626,6 +702,8 @@ function getRandomInRange(min, max) {
  function scoreanim(sc,high=true,hhh)
  {
 
+    document.getElementById('homebtn2').addEventListener('click',()=>{menu();})
+
     const numbers = "0123456789";
     let score=String(sc);
     let temp = score.split('').map((e)=>{ return '0'});
@@ -666,6 +744,8 @@ function getRandomInRange(min, max) {
 
 
  function highscoreanim(sc,highsc) {
+    applause.volume=volume/100;
+    applause.play();
     const numbers = "0123456789";
     let score=String(sc);
     let highscore=String(highsc);

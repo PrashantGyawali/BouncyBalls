@@ -45,8 +45,8 @@ overflow: hidden;
 
 #playbtn:hover {
     transition: height 0.25s linear, width 0.25s linear, font-size 0.25s linear;
-    width:270px ;
-    height: 270px;
+    width:300px ;
+    height: 300px;
     font-size: 48px;
 }
 
@@ -65,6 +65,10 @@ overflow: hidden;
      height: 50px; 
      width: 50px;
 }
+#homebtn:hover{
+   height: 60px; 
+   width: 60px;
+}
 
 #restartbtn{
     float: left;
@@ -78,7 +82,11 @@ overflow: hidden;
     margin-right: 10px ;
     margin-top: 5px;
 }
-
+#restartbtn:hover{
+  font-size: 35px;
+  height: 50px;
+  width: 50px;
+}
 
 
 

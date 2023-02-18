@@ -11,7 +11,8 @@
 <body id="body" style="position: relative; height:720px" >
 <div id="menu">
     <div style="z-index: 3;position: absolute; left: 50%; top: 30%; transform: translate(-50%,-50%);" id="menu">
-        <button id="playbtn" onclick="animationplaybtn()">Play</button>
+        <button id="playbtn" onclick="animationplaybtn();">Play</button>
+        <h2 id="highscoretext"></h2>
     </div>
 
     <div style="display: flex; flex-direction: column; z-index: 1; position: absolute; left: 80%;" id="voldiv">
@@ -34,7 +35,7 @@
     <div style="float:left; font-size: 30px;" id="score" onselectstart="return false">Score :  </div>
     <div style="float: right;">
     <button style="top: 50px; float:right;" id="homebtn" onselectstart="return false"></button>
-    <button id="restartbtn"></button>
+    <button id="restartbtn" ></button>
 
     </div>
     </div>
@@ -57,7 +58,7 @@
           </div>
         </div>
         <div class="row3">
-          <div class="col1" id="playagainbtn">Play Again</div>
+          <div class="col1" id="playagainbtn" onclick="game()">Play Again</div>
           <div class="col2" id="homebtn2">Home</div>
         </div>
     </div>
