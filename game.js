@@ -10,7 +10,7 @@ let bruh= new Audio('./sound/bruh.mp3');
 // localStorage.clear();
 
 let highscore=0;
-if(localStorage.highscore)
+if(Number(localStorage.highscore)>0)
 {
     highscore=localStorage.highscore;
 }
@@ -105,7 +105,7 @@ class Ballz{
 }
 let bg= new Canvas(board);
 
-for(let i=0;i<10;i++)
+for(let i=0;i<highscore;i++)
 {
     let randomy=Math.random()*window.innerHeight;
     let randomx=Math.random()*window.innerWidth;
@@ -391,7 +391,6 @@ body.addEventListener('click',
 (e)=>
 {
 
-    console.log(highscore);
 
 if(uiclick==false && gameover==0)
    { let m=getRandomInRange(1.5,4.8);
@@ -414,7 +413,7 @@ if(uiclick==false && gameover==0)
     scorediv.innerText='Score : '+ board.score;
     }
     if(gameover==1)
-    {   high=false;
+    {    high=false;
         bgmusic.pause();
         gameoversound.volume=volume/150;
         gameoversound.play();
@@ -422,10 +421,28 @@ if(uiclick==false && gameover==0)
         if(highscore<board.score)
         {
             high=true;
+            console.log(high)
+        }
+        if(high!=true)
+        {
+            document.getElementById('highscorevalue').innerText=String(highscore);
         }
         setTimeout(()=>
-        {document.getElementById('gameoverdiv').style.display='flex'
-         scoreanim(board.score,high,highscore);
+        {let gameoverdiv=document.getElementById('gameoverdiv');
+        gameoverdiv.style.opacity='1';
+        gameoverdiv.style.display='flex';
+
+        let innercontainer=document.getElementById('innercontainer');
+       innercontainer.style.opacity='0';
+       innercontainer.style.transition='opacity 2s linear';
+       setTimeout(function() {
+        innercontainer.style.opacity = '1';
+      }, 100);
+
+      console.log(high);
+     
+
+      scoreanim(board.score,high,highscore);
          if(highscore<board.score)
         {
             highscore=board.score;
@@ -606,12 +623,9 @@ function getRandomInRange(min, max) {
 
 
 
- function scoreanim(sc,high,hhh)
+ function scoreanim(sc,high=true,hhh)
  {
-    if(!high)
-    {
-        document.getElementById('highscorevalue').innerText=String(hhh);
-    }
+
     const numbers = "0123456789";
     let score=String(sc);
     let temp = score.split('').map((e)=>{ return '0'});
@@ -638,7 +652,8 @@ function getRandomInRange(min, max) {
         
         if(iteration >= temp.length){ 
           clearInterval(interval);
-          if(high)
+          console.log(high);
+          if(high==true)
           {setTimeout(()=>{ highscoreanim(sc,hhh);},0)}
         }
         
@@ -654,8 +669,8 @@ function getRandomInRange(min, max) {
     const numbers = "0123456789";
     let score=String(sc);
     let highscore=String(highsc);
-    console.log(score.length,highscore.length);
     let test=highscore;
+    console.log(test)
     if(score.length!=highscore.length)
     {
         for(i=0;i<(score.length-highscore.length);i++)

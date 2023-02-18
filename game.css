@@ -85,6 +85,8 @@ overflow: hidden;
 .container {
     position: absolute;
     display: flex;
+    opacity: 0;
+    transition: opacity 1s linear;
     flex-direction:column;
     justify-self: center;
     align-self: center;
@@ -95,15 +97,18 @@ overflow: hidden;
   }
   
 .innercontainer{
-  border: 2px solid black;
+  border: 2px solid rgb(122, 122, 122);
   border-radius: 30px;
   width:fit-content;
   height: fit-content;
   display: flex;
   flex-direction: column;
+  background-color: rgb(24, 24, 24);
 }
 
+
   .row1 {
+    margin-top: 4px;
     width: 40vw;
     font-size: 40px;
     display: flex;
@@ -116,16 +121,26 @@ overflow: hidden;
   
   .placeholder {
     padding: 10px;
-    background-color: #eee;
+    background-color: #ffa41b;
+    border-radius: 17px;
     align-items: center;
     align-self: center;
     justify-content: center;
     justify-self: center;
   }
   
+ #currentscorediv{
+  background-color:rgba(153,245,142,0.85);
+ } 
+ #highscorediv{
+  background-color:rgba(153,245,142,0.85);
+ }
+
+
   .row2 {
     display: flex;
     justify-content: center;
+    
   }
   
   .col1, .col2 {
@@ -134,14 +149,19 @@ overflow: hidden;
     justify-content: center;
     margin: 10px;
     padding: 10px;
-    background-color: #eee;
+    border-radius: 16px;
   }
   
   .sub-col1, .sub-col2 {
     flex: 1;
     min-width: 100px;
     margin: 5px;
-    background-color: #ddd;
+    background-color: #4e4e4e;
+    border-radius: 15px;
+    font-size: 30px;
+    color: aqua;
+    text-align: center;
+    align-items: center;
   }
   
   .row3 {
@@ -149,11 +169,12 @@ overflow: hidden;
     justify-content: center;
   }
   
-  .col1, .col2, .col3 {
+  .col1, .col2 {
     flex: 1;
     min-width: 100px;
     margin: 10px;
     padding: 10px;
+    font-size: 30px;
     text-align: center;
     background-color: #eee;
   }
@@ -161,14 +182,43 @@ overflow: hidden;
 
   #playagainbtn{
     background-image: url('./restartbtn.png'); 
-    background-position: 15% 0%;
+    background-position: min(1%,1vw) 0%;
     background-repeat: no-repeat;
     background-size: contain;
+    background-color: red;
   }
+
 
   #homebtn2{
     background-image: url('./home btn.png');
-    background-position: 15% 0%;
+    background-position: 10% 0%;
     background-repeat: no-repeat;
     background-size: contain;
+   background-color:  turquoise;
+  }
+
+  @media screen and (max-width: 523px) {
+    #playagainbtn{
+      background-position: 40%;
+      color: rgba(0,0,0,0);
+    }
+
+    #homebtn2{
+      background-position: 50% 0%;
+      color: rgba(0,0,0,0);
+    }
+  
+  }
+
+
+
+  
+  @media screen and (min-width: 523px) {
+
+    @media screen and (max-width: 2072px) {
+      .sub-col2{
+        padding-top: 15px;
+      }
+  }
+    
   }
