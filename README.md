@@ -1,10 +1,10 @@
 # BouncyBalls
 
-My bad attempt at making a game in canvas
+My not so bad at making a game in canvas
 
 
 todo:
--home button
--high scores
--play again btn when dead
+-home button (done)
+-high scores (done)
+-play again btn when dead (done)
 
