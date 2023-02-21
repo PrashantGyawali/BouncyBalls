@@ -9,8 +9,6 @@ let bruh= new Audio('./sound/bruh.mp3');
 let applause=new Audio('./sound/applaud.wav');
 
 
-localStorage.clear();
-
 let highscore=0;
 if(Number(localStorage.highscore)>0)
 {
