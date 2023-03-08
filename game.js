@@ -7,9 +7,9 @@ let bouncesound= new Audio('./sound/bounce.wav')
 let gameoversound=new Audio('./sound/gameover.wav');
 let bruh= new Audio('./sound/bruh.mp3');
 let applause=new Audio('./sound/applaud.wav');
+let menumusic=new Audio('./sound/menumusic.wav');
+menumusic.loop=true;
 
-
-localStorage.clear();
 
 let highscore=0;
 if(Number(localStorage.highscore)>0)
@@ -45,7 +45,10 @@ menu();
 
 function menu(){
     document.getElementById("highscoretext").innerText='Highscore : '+highscore;
-
+    menumusic.pause();
+    menumusic.currentTime=0;
+    menumusic.volume=volume/100;
+    menumusic.play();
     bgmusic.pause();
     let bgcc=document.getElementById('bgcanvas');
     bgcc.remove();
@@ -207,6 +210,7 @@ volume=volslider.value;
 
 function game(){
     bgmusic.play();
+    menumusic.pause();
 gamescreen.innerHTML=`<canvas id="bg" height="720px" width="1480px" style=" background-color:red;position: absolute; left: 0; top: 0; z-index: 0;" ></canvas>
 <canvas id="hello" height="720px" width="1480px" style=" z-index: 1;position: absolute;" ></canvas>
 <canvas id="effect" width="1480px" height="720px" style="position: absolute; background-color:transparent; left: 0; top: 0; z-index: 2;"></canvas>
