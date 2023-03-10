@@ -58,7 +58,7 @@ overflow: hidden;
 }
 
 #homebtn{
-    background-image: url('./home btn.png');
+    background-image: url('./homebtn.png');
     background-size: cover;
     background-color: transparent;
     border: none;
@@ -198,7 +198,7 @@ overflow: hidden;
 
 
   #homebtn2{
-    background-image: url('./home btn.png');
+    background-image: url('./homebtn.png');
     background-position: 10% 0%;
     background-repeat: no-repeat;
     background-size: contain;

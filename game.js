@@ -192,13 +192,14 @@ voldiv.addEventListener('mouseout' ,
     let txt=volslider.value==0? '&#128264': volslider.value>50?'&#128266':'&#128265';
 volbtn.innerHTML=txt;
 volume=volslider.value;
+menumusic.volume=volume/100;
 });
 
 voldiv.addEventListener('touchmove', ()=>{
 let txt=volslider.value==0? '&#128264': volslider.value>50?'&#128266':'&#128265';
 volbtn.innerHTML=txt;
 volume=volslider.value;
-
+menumusic.volume=volume/100;
 });
 }
 
