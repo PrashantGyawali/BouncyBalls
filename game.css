@@ -146,7 +146,6 @@ overflow: hidden;
   .row2 {
     display: flex;
     justify-content: center;
-    
   }
   
   .col1, .col2 {
