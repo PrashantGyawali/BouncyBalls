@@ -1,14 +1,28 @@
-let bgmusic = new Audio('/assets/sound/bgmusic.wav');
+let bgmusic = new Audio('./assets/sound/bgmusic.wav');
 bgmusic.loop = true;
-let freezesound = new Audio("/assets/sound/freeze.mp3");
+let freezesound = new Audio("./assets/sound/freeze.mp3");
 let fastsound = new Audio("/assets/sound/fast.mp3");
-let entrysound = new Audio('/assets/sound/entry.wav');
-let bouncesound = new Audio('/assets/sound/bounce.wav')
-let gameoversound = new Audio('/assets/sound/gameover.wav');
-let bruh = new Audio('/assets/sound/bruh.mp3');
-let applause = new Audio('/assets/sound/applaud.wav');
-let menumusic = new Audio('/assets/sound/menumusic.wav');
+let entrysound = new Audio('./assets/sound/entry.wav');
+let bouncesound = new Audio('./assets/sound/bounce.wav')
+let gameoversound = new Audio('./assets/sound/gameover.wav');
+let bruh = new Audio('./assets/sound/bruh.mp3');
+let applause = new Audio('./assets/sound/applaud.wav');
+let menumusic = new Audio('./assets/sound/menumusic.wav');
 menumusic.loop = true;
+
+let interacted=false;
+function interactionCheckerFn(){interacted=true;}
+function musicStarterFn(){
+    if(interacted)
+    {
+        menumusic.play();
+        removeEventListener("click",interactionChecker);
+        removeEventListener("mousemove",musicStarter);
+        delete window.interacted;
+    }
+}
+let interactionChecker=addEventListener("click",interactionCheckerFn);
+let musicStarter=addEventListener("mousemove",musicStarterFn);
 
 
 let highscore = 0;
@@ -47,7 +61,7 @@ menu();
 
 function menu() {
     document.getElementById("highscoretext").innerText = 'Highscore : ' + highscore;
-    menumusic.pause();
+
     menumusic.currentTime = 0;
     menumusic.volume = volume / 100;
     menumusic.play();
