@@ -11,11 +11,11 @@
 }
 
 #effect{
-    height:720px;
-    width:1480px;
+    height:100vh;
+    width:100vw;
     position:absolute;
     background-size: cover;
-    background-image: "url('/assets/ui/freeze.png')";
+    background-image: "url('./assets/ui/freeze.png')";
     opacity: 1;
     background-color: transparent;
 }
@@ -54,7 +54,7 @@ overflow: hidden;
 }
 
 #homebtn{
-    background-image: url('/assets/ui/homebtn.png');
+    background-image: url('./assets/ui/homebtn.png');
     background-size: cover;
     background-color: transparent;
     border: none;
@@ -68,7 +68,7 @@ overflow: hidden;
 
 #restartbtn{
     float: left;
-    background-image: url('/assets/ui/restartbtn.png');
+    background-image: url('./assets/ui/restartbtn.png');
     background-size: cover;
     background-color: transparent;
     font-size: 30px;
@@ -187,7 +187,7 @@ overflow: hidden;
 
 
   #playagainbtn{
-    background-image: url('/assets/ui/restartbtn.png'); 
+    background-image: url('./assets/ui/restartbtn.png'); 
     background-position: min(1%,1vw) 0%;
     background-repeat: no-repeat;
     background-size: contain;
@@ -196,7 +196,7 @@ overflow: hidden;
 
 
   #homebtn2{
-    background-image: url('/assets/ui/homebtn.png');
+    background-image: url('./assets/ui/homebtn.png');
     background-position: 10% 0%;
     background-repeat: no-repeat;
     background-size: contain;
