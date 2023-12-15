@@ -16,13 +16,19 @@ function musicStarterFn(){
     if(interacted)
     {
         menumusic.play();
-        removeEventListener("click",interactionChecker);
-        removeEventListener("mousemove",musicStarter);
-        delete window.interacted;
+        document.onclick=null;
+        document.onmousemove=null;
+        
+    }
+    else{
+        if(!menumusic.paused||!menumusic.currentTime)
+        {
+            interacted=true;
+        }
     }
 }
-let interactionChecker=addEventListener("click",interactionCheckerFn);
-let musicStarter=addEventListener("mousemove",musicStarterFn);
+document.onclick=interactionCheckerFn;
+document.onmousemove=musicStarterFn;
 
 
 let highscore = 0;
