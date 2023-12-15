@@ -11,5 +11,5 @@ My not so bad attempt at making a game in canvas. Check out the desktop version 
 
 ### Game Images
 
-[Menu image](./assets/sample/bouncymenu.png)
-[Game Image](./assets/sample/bouncygame.png)
+![Menu image](./assets/sample/bouncymenu.png)
+![Game Image](./assets/sample/bouncygame.png)
