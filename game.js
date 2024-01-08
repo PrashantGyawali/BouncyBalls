@@ -266,8 +266,8 @@ function game() {
 
 
 <div style="display:none;">
-    <img id="freeze" src="/assets/ui/freeze.png" width="300" height="227" />
-    <img id="fast" src="/assets/ui/fast.png" width="300" height="227" />
+    <img id="freeze" src="./assets/ui/freeze.png" width="300" height="227" />
+    <img id="fast" src="./assets/ui/fast.png" width="300" height="227" />
 </div>`;
 
     menuscreen.style.display = 'none';
