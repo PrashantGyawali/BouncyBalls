@@ -1,7 +1,7 @@
 let bgmusic = new Audio('./assets/sound/bgmusic.wav');
 bgmusic.loop = true;
 let freezesound = new Audio("./assets/sound/freeze.mp3");
-let fastsound = new Audio("/assets/sound/fast.mp3");
+let fastsound = new Audio("./assets/sound/fast.mp3");
 let entrysound = new Audio('./assets/sound/entry.wav');
 let bouncesound = new Audio('./assets/sound/bounce.wav')
 let gameoversound = new Audio('./assets/sound/gameover.wav');
@@ -67,7 +67,7 @@ menu();
 
 function menu() {
     document.getElementById("highscoretext").innerText = 'Highscore : ' + highscore;
-
+    gamescreen.innerHTML ='';
     menumusic.currentTime = 0;
     menumusic.volume = volume / 100;
     menumusic.play();
@@ -490,7 +490,6 @@ function game() {
                     entrysound.pause();
                     if (highscore < board.score) {
                         high = true;
-                        console.log(high)
                     }
                     if (high != true) {
                         document.getElementById('highscorevalue').innerText = String(highscore);
