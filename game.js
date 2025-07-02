@@ -10,25 +10,40 @@ let applause = new Audio('./assets/sound/applaud.wav');
 let menumusic = new Audio('./assets/sound/menumusic.wav');
 menumusic.loop = true;
 
-let interacted=false;
-function interactionCheckerFn(){interacted=true;}
-function musicStarterFn(){
-    if(interacted)
-    {
+function playGameMusic() {
+    menumusic.pause();
+    setTimeout(() => {
+        bgmusic.play();
+    }, 0);
+}
+function playMenuMusic() {
+    bgmusic.pause();
+    setTimeout(() => {
         menumusic.play();
-        document.onclick=null;
-        document.onmousemove=null;
-        
+    }, 0);
+}
+
+
+let interacted = false;
+function interactionCheckerFn() { interacted = true; }
+function musicStarterFn() {
+    if (interacted) {
+        menumusic.play();
+        document.onclick = null;
+        document.onmousemove = null;
     }
-    else{
-        if(!menumusic.paused||!menumusic.currentTime)
-        {
-            interacted=true;
+    else {
+        if (!menumusic.paused || !menumusic.currentTime) {
+            interacted = true;
         }
     }
 }
-document.onclick=interactionCheckerFn;
-document.onmousemove=musicStarterFn;
+document.onclick = interactionCheckerFn;
+document.onmousemove = musicStarterFn;
+
+
+
+
 
 
 let highscore = 0;
@@ -36,11 +51,16 @@ if (Number(localStorage.highscore) > 0) {
     highscore = localStorage.highscore;
 }
 
-document.getElementById("highscoretext").innerText = 'Highscore : ' + highscore;
+document.getElementById("highscoretext").innerText = highscore;
 
-let menuscreen = document.getElementById('menu');
-let gamescreen = document.getElementById('game');
-var body = document.getElementById('body');
+
+function getScreens() {
+    let menuscreen = document.getElementById('menu');
+    let gamescreen = document.getElementById('game');
+    let gameoverdiv = document.getElementById('gameOverMenu');
+    return { menuscreen, gamescreen, gameoverdiv };
+}
+
 let volume = 100;
 
 function animationplaybtn() {
@@ -67,15 +87,17 @@ menu();
 
 function menu() {
     document.getElementById("highscoretext").innerText = 'Highscore : ' + highscore;
-    gamescreen.innerHTML ='';
+    let { menuscreen, gamescreen } = getScreens();
+    gamescreen.innerHTML = '';
     menumusic.currentTime = 0;
     menumusic.volume = volume / 100;
-    menumusic.play();
-    bgmusic.pause();
+
+    playMenuMusic();
     let bgcc = document.getElementById('bgcanvas');
     bgcc.remove();
-    let menuscreen = document.getElementById('menu');
+
     menuscreen.innerHTML += `<canvas height="100px" width="100px" style="background-color: aqua; z-index:0; position: absolute; filter: blur(25px);" id="bgcanvas"></canvas>`
+
     menuscreen.style.display = 'inline';
     gamescreen.style.display = 'none';
     animationplaybtncancel();
@@ -225,51 +247,66 @@ function menu() {
 
 
 function game() {
-    bgmusic.play();
-    menumusic.pause();
+
+    playGameMusic();
+    let { gamescreen } = getScreens();
+
     gamescreen.innerHTML = `<canvas id="bg" height="720px" width="1480px" style=" background-color:red;position: absolute; left: 0; top: 0; z-index: 0;" ></canvas>
-<canvas id="hello" height="720px" width="1480px" style=" z-index: 1;position: absolute;" ></canvas>
-<canvas id="effect" width="1480px" height="720px" style="position: absolute; background-color:transparent; left: 0; top: 0; z-index: 2;"></canvas>
-
-<div id="UI" style="height:720px; width:98vw; color:black; position:absolute; z-index: 3;">
-<div style="float:left; font-size: 30px;" id="score" onselectstart="return false">Score :  </div>
-<div style="float: right;">
-<button style="top: 50px; float:right;" id="homebtn" onselectstart="return false"></button>
-<button id="restartbtn" ></button>
-
-</div>
-</div>
-
-
-
-<div class="container" id="gameoverdiv" style="display: none; z-index: 10;">
-    <div class="innercontainer" id="innercontainer">
-    <div class="row1" id="row1">
-      <div class="placeholder">Game Over</div>
+    <canvas id="hello" height="720px" width="1480px" style=" z-index: 1;position: absolute;" ></canvas>
+    <canvas id="effect" width="1480px" height="720px" style="position: absolute; background-color:transparent; left: 0; top: 0; z-index: 2;"></canvas>
+    
+    <div id="UI" style="height:720px; width:98vw; color:black; position:absolute; z-index: 3;">
+    <div style="float:left; font-size: 30px;" id="score" onselectstart="return false">Score :  </div>
+    <div style="float: right;">
+    <button style="top: 50px; float:right;" id="homebtn" onselectstart="return false"></button>
+    <button id="restartbtn" ></button>
+    
     </div>
-    <div class="row2" id="row2">
-      <div class="col1" id="currentscorediv">
-        <div class="sub-col1" id="currentscoretxt" >Current Score: </div>
-        <div class="sub-col2" id="currentscorevalue"></div>
+    </div>
+    
+<div class="game-over-overlay" id="gameOverMenu">
+  <div class="game-over-container">
+    <h1 class="game-over-title">Game Over</h1>
+
+    <div class="scores-container">
+      <div class="score-card current-score">
+        <div class="score-label">Current Score</div>
+        <div class="score-value" id="currentScoreValue">0</div>
       </div>
-      <div class="col2" id="highscorediv">
-        <div class="sub-col1" id="highscoretxt">Highest Score: </div>
-        <div class="sub-col2" id="highscorevalue"></div>
+
+      <div class="score-card high-score">
+        <div class="score-label">Best Score</div>
+        <div class="score-value" id="highScoreValue">0</div>
       </div>
     </div>
-    <div class="row3">
-      <div class="col1" id="playagainbtn" onclick="game()">Play Again</div>
-      <div class="col2" id="homebtn2">Home</div>
+
+    <div class="buttons-container">
+      <button class="game-button" id="playAgainBtn" onclick="game()">
+        <!-- Restart Icon -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
+          <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6 0 .34-.03.67-.08 1h2.02c.05-.33.06-.66.06-1 0-4.42-3.58-8-8-8z" fill="currentColor"/>
+          <path d="M6.08 13H4.06c-.05.33-.06.66-.06 1 0 4.42 3.58 8 8 8v4l5-5-5-5v4c-3.31 0-6-2.69-6-6 0-.34.03-.67.08-1z" fill="currentColor"/>
+        </svg>
+        Play Again
+      </button>
+
+      <button class="game-button home-button" id="homeBtn" onclick="menu()">
+        <!-- Home Icon -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/>
+        </svg>
+        Home
+      </button>
     </div>
-</div>
   </div>
+</div>
 
-
-<div style="display:none;">
+    
+    <div style="display:none;">
     <img id="freeze" src="./assets/ui/freeze.png" width="300" height="227" />
     <img id="fast" src="./assets/ui/fast.png" width="300" height="227" />
-</div>`;
-
+    </div>`;
+    let { menuscreen, gameoverdiv } = getScreens();
     menuscreen.style.display = 'none';
     gamescreen.style.display = 'inline';
     gameoverdiv.style.display = 'none';
@@ -289,6 +326,8 @@ function game() {
 
     let body = document.getElementById("body");
     let t = document.getElementById("effect");
+    t.width = width;
+    t.height = height;
 
     let effect = t.getContext('2d');
 
@@ -461,7 +500,7 @@ function game() {
 
     body.addEventListener('click',
         (e) => {
-
+            let high = false;
 
             if (uiclick == false && gameover == 0) {
                 let m = getRandomInRange(1.5, 4.8);
@@ -479,7 +518,7 @@ function game() {
                 if (gameover == 0) {
                     board.balls.push(temp);
                     multiplier += board.score > 5 ? 0.1 : 0.05;
-                    board.score++;
+                    board.score += 5;
                     scorediv.innerText = 'Score : ' + board.score;
                 }
                 if (gameover == 1) {
@@ -491,31 +530,18 @@ function game() {
                     if (highscore < board.score) {
                         high = true;
                     }
+                    const { gameoverdiv } = getScreens();
+                    gameoverdiv.style.display = 'flex';
                     if (high != true) {
-                        document.getElementById('highscorevalue').innerText = String(highscore);
+                        document.getElementById('highScoreValue').innerText = String(highscore);
                     }
-                    setTimeout(() => {
-                        let gameoverdiv = document.getElementById('gameoverdiv');
-                        gameoverdiv.style.opacity = '1';
-                        gameoverdiv.style.display = 'flex';
-
-                        let innercontainer = document.getElementById('innercontainer');
-                        innercontainer.style.opacity = '0';
-                        innercontainer.style.transition = 'opacity 2s linear';
-                        setTimeout(function () {
-                            innercontainer.style.opacity = '1';
-                        }, 100);
-
-                        console.log(high);
 
 
-                        scoreanim(board.score, high, highscore);
-                        if (highscore < board.score) {
-                            highscore = board.score;
-                            localStorage.highscore = highscore;
-                        }
+                    scoreanim(board.score, high, highscore);
+                    if (highscore < board.score) {
+                        highscore = board.score;
+                        localStorage.highscore = highscore;
                     }
-                        , 0);
 
 
                     if (board.score < 5) {
@@ -537,24 +563,23 @@ function game() {
     let counter = 10;
     let skip = false;
 
-
     let update = function () {
-
         if (gameover == 1) {
             return;
         }
+
         if (gameover == 0) {
             board.update();
 
             if (board.score > 30) {
                 if (skip == false) {
-                    let test = Math.random() * 1000;
-                    if (test >= 7 && test <= 998) {
+                    let test = Math.random() * 10000;
 
+                    if (test >= 5 && test <= 9990) {
                         counter = 10;
                     }
 
-                    if (test < 7) {
+                    if (test < 5) {
                         counter = 1;
                         const image = document.getElementById("fast");
                         effect.drawImage(image, 0, 0, width, height);
@@ -563,10 +588,17 @@ function game() {
 
                         bgmusic.playbackRate = 1.25;
                         skip = true;
-                        setTimeout(() => { skip = false; fastsound.pause(); fastsound.currentTime = 0; effect.clearRect(0, 0, width, height); bgmusic.playbackRate = 1; }, getRandomInRange(700, 1000));
+                        setTimeout(() => {
+                            skip = false;
+                            fastsound.pause();
+                            fastsound.currentTime = 0;
+                            effect.clearRect(0, 0, width, height);
+                            bgmusic.playbackRate = 1;
+                            counter = 10;
+                        }, getRandomInRange(700, 1000));
                     }
 
-                    if (test > 998) {
+                    if (test > 9990) {
                         counter = getRandomInRange(500, 1000);
                         const image = document.getElementById("freeze");
                         effect.globalAlpha = counter / 500;
@@ -575,23 +607,24 @@ function game() {
                         freezesound.play();
                         bgmusic.pause();
 
-                        setTimeout(() => { skip == false && effect.clearRect(0, 0, width, height); freezesound.pause(); bgmusic.play(); freezesound.currentTime = 0; }, counter);
+                        setTimeout(() => {
+                            if (skip == false) effect.clearRect(0, 0, width, height);
+                            freezesound.pause();
+                            freezesound.currentTime = 0;
+                            bgmusic.play();
+                        }, counter);
                     }
-
                 }
-
-
-
             }
-            setTimeout(() => {
 
+            setTimeout(() => {
                 update();
             }, counter);
-
         }
     }
 
     setTimeout(update, counter);
+
 
 
 
@@ -683,17 +716,14 @@ function getRandomInRange(min, max) {
 
 
 
-function scoreanim(sc, high = true, hhh) {
-
-    document.getElementById('homebtn2').addEventListener('click', () => { menu(); })
-
+function scoreanim(currentScore, isHighScore = true, highScore) {
     const numbers = "0123456789";
-    let score = String(sc);
+    let score = String(currentScore);
     let temp = score.split('').map((e) => { return '0' });
     let test = '';
     temp.forEach((e) => { test += '0' })
     let interval = null;
-    let txt = document.getElementById("currentscorevalue");
+    let txt = document.getElementById("currentScoreValue");
     txt.textContent = test;
 
     let iteration = 0;
@@ -713,8 +743,7 @@ function scoreanim(sc, high = true, hhh) {
 
         if (iteration >= temp.length) {
             clearInterval(interval);
-            console.log(high);
-            if (high == true) { setTimeout(() => { highscoreanim(sc, hhh); }, 0) }
+            if (isHighScore == true) { setTimeout(() => { highscoreanim(currentScore, highScore); }, 0) }
         }
 
         iteration += 1 / 20;
@@ -743,7 +772,7 @@ function highscoreanim(sc, highsc) {
     }
 
     let interval = null;
-    let txt = document.getElementById("highscorevalue");
+    let txt = document.getElementById("highScoreValue");
     txt.textContent = test;
 
     let iteration = 0;
