@@ -518,7 +518,7 @@ function game() {
                 if (gameover == 0) {
                     board.balls.push(temp);
                     multiplier += board.score > 5 ? 0.1 : 0.05;
-                    board.score += 5;
+                    board.score ++;
                     scorediv.innerText = 'Score : ' + board.score;
                 }
                 if (gameover == 1) {
