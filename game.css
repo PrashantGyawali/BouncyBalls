@@ -1,5 +1,7 @@
 #UI #score{
     pointer-events: none;
+    font-family: 'Trebuchet MS', sans-serif,Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
 }
 
 #hello{
@@ -38,6 +40,7 @@ overflow: hidden;
 }
 #highscoretext{
   text-align: center;
+  font-family: 'Trebuchet MS', sans-serif,Verdana, Geneva, Tahoma, sans-serif;
 }
 
 #playbtn:hover {
@@ -91,7 +94,7 @@ overflow: hidden;
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100svh;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
     display: flex;

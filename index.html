@@ -31,21 +31,25 @@
 
 
   <div style="display: flex; position: absolute;" id="game">
+
+
+  </div>
+
+  <template id="game-template">
     <canvas id="bg" height="720px" width="1480px"
       style=" background-color:red;position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
     <canvas id="hello" height="720px" width="1480px" style=" z-index: 1;position: absolute;"></canvas>
     <canvas id="effect" width="1480px" height="720px"
       style="position: absolute; background-color:transparent; left: 0; top: 0; z-index: 2;"></canvas>
 
-    <div id="UI" style="height:720px; width:98vw; color:black; position:absolute; z-index: 3;">
-      <div style="float:left; font-size: 30px;" id="score">Score : </div>
+    <div id="UI"
+      style="box-sizing:border-box;height:720px; padding: 5px 5px; width:100vw; color:black; position:absolute; z-index: 3;">
+      <div style="float:left; font-size: 30px;" id="score" onselectstart="return false">Score :</div>
       <div style="float: right;">
-        <button style="top: 50px; float:right;" id="homebtn"></button>
+        <button style="top: 50px; float:right;" id="homebtn" onselectstart="return false"></button>
         <button id="restartbtn"></button>
-
       </div>
     </div>
-
 
     <div class="game-over-overlay" id="gameOverMenu">
       <div class="game-over-container">
@@ -53,21 +57,35 @@
 
         <div class="scores-container">
           <div class="score-card current-score">
-            <div class="score-label">Current Score</div>
-            <div class="score-value" id="currentScoreValue">1,250</div>
+            <div class="score-label">Current Score:</div>
+            <div class="score-value" id="currentScoreValue">0</div>
           </div>
 
           <div class="score-card high-score">
             <div class="score-label">Best Score</div>
-            <div class="score-value" id="highScoreValue">2,840</div>
+            <div class="score-value" id="highScoreValue">0</div>
           </div>
         </div>
 
         <div class="buttons-container">
           <button class="game-button" id="playAgainBtn" onclick="game()">
+            <!-- Restart Icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
+              <path
+                d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6 0 .34-.03.67-.08 1h2.02c.05-.33.06-.66.06-1 0-4.42-3.58-8-8-8z"
+                fill="currentColor" />
+              <path
+                d="M6.08 13H4.06c-.05.33-.06.66-.06 1 0 4.42 3.58 8 8 8v4l5-5-5-5v4c-3.31 0-6-2.69-6-6 0-.34.03-.67.08-1z"
+                fill="currentColor" />
+            </svg>
             Play Again
           </button>
+
           <button class="game-button home-button" id="homeBtn" onclick="menu()">
+            <!-- Home Icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor" />
+            </svg>
             Home
           </button>
         </div>
@@ -75,12 +93,12 @@
     </div>
 
 
-
     <div style="display:none;">
       <img id="freeze" src="./assets/ui/freeze.png" width="300" height="227" />
       <img id="fast" src="./assets/ui/fast.png" width="300" height="227" />
     </div>
-  </div>
+  </template>
+
 
 </body>
 

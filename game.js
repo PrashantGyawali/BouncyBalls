@@ -14,37 +14,19 @@ function playGameMusic() {
     menumusic.pause();
     setTimeout(() => {
         bgmusic.play();
-    }, 0);
+    }, 10);
 }
 function playMenuMusic() {
     bgmusic.pause();
     setTimeout(() => {
         menumusic.play();
-    }, 0);
+    }, 10);
 }
-
-
-let interacted = false;
-function interactionCheckerFn() { interacted = true; }
-function musicStarterFn() {
-    if (interacted) {
-        menumusic.play();
-        document.onclick = null;
-        document.onmousemove = null;
-    }
-    else {
-        if (!menumusic.paused || !menumusic.currentTime) {
-            interacted = true;
-        }
-    }
+function getGameTemplate() {
+    let temp = document.getElementById("game-template");
+    return temp.content.cloneNode(true);
 }
-document.onclick = interactionCheckerFn;
-document.onmousemove = musicStarterFn;
-
-
-
-
-
+let hasPlayed=false;
 
 let highscore = 0;
 if (Number(localStorage.highscore) > 0) {
@@ -71,7 +53,6 @@ function animationplaybtn() {
     playbtn.style.height = '2500px';
     setTimeout(() => {
         game();
-
     }, 1000);
 }
 function animationplaybtncancel() {
@@ -92,7 +73,15 @@ function menu() {
     menumusic.currentTime = 0;
     menumusic.volume = volume / 100;
 
-    playMenuMusic();
+    if(hasPlayed){playMenuMusic()}
+    document.getElementById("menu").addEventListener('click', (e) => {
+        e.target.id == "playbtn" ? null : playMenuMusic();
+    }, { once: true });
+    
+    document.getElementById("menu").addEventListener('touchstart', (e) => {
+        e.target.id != "playbtn" ? playMenuMusic():null;
+    }, { once: true });
+
     let bgcc = document.getElementById('bgcanvas');
     bgcc.remove();
 
@@ -244,68 +233,13 @@ function menu() {
 
 
 
-
-
 function game() {
-
+    hasPlayed=true;
     playGameMusic();
     let { gamescreen } = getScreens();
 
-    gamescreen.innerHTML = `<canvas id="bg" height="720px" width="1480px" style=" background-color:red;position: absolute; left: 0; top: 0; z-index: 0;" ></canvas>
-    <canvas id="hello" height="720px" width="1480px" style=" z-index: 1;position: absolute;" ></canvas>
-    <canvas id="effect" width="1480px" height="720px" style="position: absolute; background-color:transparent; left: 0; top: 0; z-index: 2;"></canvas>
-    
-    <div id="UI" style="height:720px; width:98vw; color:black; position:absolute; z-index: 3;">
-    <div style="float:left; font-size: 30px;" id="score" onselectstart="return false">Score :  </div>
-    <div style="float: right;">
-    <button style="top: 50px; float:right;" id="homebtn" onselectstart="return false"></button>
-    <button id="restartbtn" ></button>
-    
-    </div>
-    </div>
-    
-<div class="game-over-overlay" id="gameOverMenu">
-  <div class="game-over-container">
-    <h1 class="game-over-title">Game Over</h1>
+    gamescreen.replaceChildren(getGameTemplate())
 
-    <div class="scores-container">
-      <div class="score-card current-score">
-        <div class="score-label">Current Score</div>
-        <div class="score-value" id="currentScoreValue">0</div>
-      </div>
-
-      <div class="score-card high-score">
-        <div class="score-label">Best Score</div>
-        <div class="score-value" id="highScoreValue">0</div>
-      </div>
-    </div>
-
-    <div class="buttons-container">
-      <button class="game-button" id="playAgainBtn" onclick="game()">
-        <!-- Restart Icon -->
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
-          <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6 0 .34-.03.67-.08 1h2.02c.05-.33.06-.66.06-1 0-4.42-3.58-8-8-8z" fill="currentColor"/>
-          <path d="M6.08 13H4.06c-.05.33-.06.66-.06 1 0 4.42 3.58 8 8 8v4l5-5-5-5v4c-3.31 0-6-2.69-6-6 0-.34.03-.67.08-1z" fill="currentColor"/>
-        </svg>
-        Play Again
-      </button>
-
-      <button class="game-button home-button" id="homeBtn" onclick="menu()">
-        <!-- Home Icon -->
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
-          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/>
-        </svg>
-        Home
-      </button>
-    </div>
-  </div>
-</div>
-
-    
-    <div style="display:none;">
-    <img id="freeze" src="./assets/ui/freeze.png" width="300" height="227" />
-    <img id="fast" src="./assets/ui/fast.png" width="300" height="227" />
-    </div>`;
     let { menuscreen, gameoverdiv } = getScreens();
     menuscreen.style.display = 'none';
     gamescreen.style.display = 'inline';
@@ -406,11 +340,14 @@ function game() {
                         }
                     }
                 }
-
-                if (this.score > 30) {
-                    this.trail = 0.4;
+                if (this.score >= 42) {
+                    for (let i = 0; i < (this.balls.length - 1); i++) {
+                        for (let j = i + 1; j < this.balls.length; j++) {
+                                if(i % 2 == 0 && (j % 3 == 0 || j%5==0)) continue; 
+                                resolveCollision(this.balls[i], this.balls[j]);
+                        }
+                    }
                 }
-
 
             }
         }
@@ -508,7 +445,7 @@ function game() {
                 let vx = getRandomInRange(0, v);
                 let vy = getRandomInRange(0, 2) < 1 ? Math.sqrt(v * v - vx * vx) : (-Math.sqrt(v * v - vx * vx));
                 vx *= getRandomInRange(0, 2) < 1 ? (-1) : (1);
-                let r = Math.sqrt(m) * Math.min(window.innerHeight, window.innerWidth) / 20;
+                let r = Math.sqrt(m) * Math.sqrt(window.innerWidth*window.innerHeight)/30;
 
                 let temp = new Ball(e.offsetX, e.offsetY, r, vx, vy, 'white', m);
 
@@ -518,8 +455,8 @@ function game() {
                 if (gameover == 0) {
                     board.balls.push(temp);
                     multiplier += board.score > 5 ? 0.1 : 0.05;
-                    board.score ++;
-                    scorediv.innerText = 'Score : ' + board.score;
+                    board.score++;
+                    scorediv.innerText = 'Score: ' + board.score;
                 }
                 if (gameover == 1) {
                     high = false;
